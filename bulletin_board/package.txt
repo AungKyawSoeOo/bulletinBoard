@@ -1,0 +1,6 @@
+github.com/rs/zerolog/log
+github.com/go-playground/validator/v10
+github.com/joho/godotenv
+
+go run github.com/githubnemo/CompileDaemon (run CompileDaemon)
+go run migrate/migrate.go (to first migrate table)

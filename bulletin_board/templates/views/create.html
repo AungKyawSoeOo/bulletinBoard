@@ -1,0 +1,29 @@
+{{ define "create.html" }}
+<html>
+    {{ template "header.html" }}
+    <body>
+        {{ template "common_header.html" }}
+        <h2>Create</h2>
+        <div class="container">
+            <form action="/posts/" method="post" class="createForm"
+                id="createForm">
+                {{ template "postform.html" . }}
+                <button class="btn btn-primary mt-3"
+                    onclick="showConfirmation()" type="button">Create</button>
+                <a class="btn btn-secondary mt-3" href="/posts/">Cancel</a>
+            </form>
+
+            <div id="overlay" class="overlay">
+                <div class="confirmation">
+                    <h3>Confirmation</h3>
+                    <p>Title: <span id="confirmTitle"></span></p>
+                    <p>Description: <span id="confirmDescription"></span></p>
+                    <button class="btn btn-primary" onclick="confirmCreate()">Confirm</button>
+                    <button class="btn btn-secondary" onclick="cancelCreate()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        {{ template "footer.html" }}
+    </body>
+</html>
+{{ end }}

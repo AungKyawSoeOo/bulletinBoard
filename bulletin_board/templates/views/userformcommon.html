@@ -1,0 +1,45 @@
+
+<label for="username">Username:</label>
+<input class="form-control" type="text" id="username"
+    name="username" value="{{ if .User.Username }}{{ .User.Username }}{{ end }}"
+    required>
+<label for="email">Email:</label>
+<input class="form-control" type="email" id="email" name="email"
+    value="{{ if .User.Email }}{{ .User.Email }}{{ end }}" required>
+
+{{ if not .IsUpdate }}
+<label for="password">Password:</label>
+<input class="form-control" type="password" id="password"
+    name="password" value="{{ if .User.Password }}{{ .User.Password }}{{ end }}">
+
+<label for="password">Password Confirmation:</label>
+<input class="form-control" type="password" id="cpassword"
+    name="cpassword">
+{{end}}
+<label for="type">Type</label>
+<select class="form-select" aria-label="Default select example" name="type"
+    id="type">
+    {{if eq .User.Type "0"}}
+    <option value="0" selected>User</option>
+    <option value="1">Admin</option>
+    {{else}}
+    <option value="0">User</option>
+    <option value="1" selected>Admin</option>
+    {{end}}
+</select>
+
+<label for="phone">Phone</label>
+<input class="form-control" type="text" id="phone"
+    name="phone" value="{{ if .User.Phone }}{{ .User.Phone }}{{ end }}">
+
+<label for="dob">Date Of Birth</label>
+<input class="form-control" name="dob" id="dob" type="date"
+    value="{{ if .User.Date_Of_Birth }}{{ .User.Date_Of_Birth.Format "2006-01-02"
+    }}{{ end }}" />
+
+<label for="address">Address</label>
+<textarea class="form-control" name="address" id="address" cols="30" rows="10">
+    {{ if .User.Address }}{{ .User.Address }}{{ end }}
+</textarea>
+<label for="profile" class="form-label">Profile</label>
+<input class="form-control" type="file" id="photo" name="photo">

@@ -1,0 +1,21 @@
+{{ define "login.html" }}
+<html>
+    {{ template "header.html" }}
+    <body>
+        {{ template "common_header.html" }}
+        <h2 class="text-center mt-5">Login</h2>
+        <div class="container">
+            <form action="/auth/login" method="post" class="loginForm">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email"
+                    required>
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password"
+                    name="password" required>
+                <button class="btn btn-primary mt-5" type="submit">Login</button>
+            </form>
+        </div>
+        {{ template "footer.html" }}
+    </body>
+</html>
+{{ end }}

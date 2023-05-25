@@ -1,0 +1,24 @@
+{{ define "register.html" }}
+<html>
+    {{ template "header.html" }}
+    <body>
+        {{ template "common_header.html" }}
+        <h2 class="text-center mt-5">Register</h2>
+        <div class="container">
+            <form action="/auth/register" method="post" class="registerForm" enctype="multipart/form-data">
+                <label for="username">Username:</label>
+                <input class="form-control" type="text" id="username"
+                    name="username" required>
+                <label for="email">Email:</label>
+                <input class="form-control" type="email" id="email" name="email"
+                    required>
+                <label for="password">Password:</label>
+                <input class="form-control" type="password" id="password"
+                    name="password" required>
+                <button type="submit" class="btn btn-primary mt-3">Register</button>
+            </form>
+        </div>
+        {{ template "footer.html" }}
+    </body>
+</html>
+{{ end }}

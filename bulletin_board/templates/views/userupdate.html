@@ -1,0 +1,46 @@
+{{ define "userupdate.html" }}
+<html>
+    {{ template "header.html" }}
+    <body>
+        {{ template "common_header.html" }}
+        <h2 class="text-center mt-5">User Update</h2>
+        <div class="container">
+            <form action="/users/{{ .User.Id }}" method="post"
+                class="createForm"
+                id="UserupdateForm" enctype="multipart/form-data">
+                <input type="hidden" class="form-control" name="_method"
+                    value="PUT">
+                {{ template "userformcommon.html" . }}
+                <img src="/{{ .User.Profile_Photo }}" alt="Profile Photo">
+                <!-- <img src="/static/images/1685025554_a2.png" alt="Profile Photo"> -->
+   
+                {{.User.Profile_Photo}}
+                {{.User.Id}}
+                <button onclick="showUserConfirmation()" type="button">Submit</button>
+            </form>
+
+            <div id="overlay" class="overlay">
+                <div class="confirmation">
+                    <h3>User Update Confirmation</h3>
+                    <p>Username: <span id="confirmName"></span></p>
+                    <p>Email: <span id="confirmEmail"></span></p>
+                    <p>Type: <span id="confirmType"></span></p>
+                    <p>Phone: <span id="confirmPhone"></span></p>
+                    <p>Date Of Birth: <span id="confirmDob"></span></p>
+                    <p>Address: <span id="confirmAddress"></span></p>
+                    <button class="btn btn-primary"
+                        onclick="confirmUserUpdate()">Confirm</button>
+                    <button class="btn btn-secondary"
+                        onclick="cancelCreate()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        {{ template "footer.html" }}
+    </body>
+    <script>
+        function confirmUserUpdate() {
+             document.getElementById("UserupdateForm").submit();
+}
+    </script>
+</html>
+{{ end }}
