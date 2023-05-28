@@ -24,12 +24,32 @@ func NewUsercontroller(service service.UserService) *UsersController {
 	}
 }
 
+// func getLoggedIn(ctx *gin.Context) bool {
+// 	isLoggedIn := false
+// 	cookie, err := ctx.Request.Cookie("token")
+// 	if err == nil && cookie.Value != "" {
+// 		isLoggedIn = true
+// 	}
+// 	return isLoggedIn
+// }
+
 // Find All
-func (controller *UsersController) GetUsers(ctx *gin.Context) {
+func (controller *UsersController) GetUsers(ctx *gin.Context, userRole string) {
+	isLoggedIn := getIsLoggedIn(ctx)
+	userID, err := getCurrentUserID(ctx)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/")
+		return
+	}
+	currentUser := controller.userService.FindById(userID)
+
 	users := controller.userService.FindAll()
 	// helper.ResponseHandler(ctx, http.StatusOK, "Get All Users Success.", users)
 	ctx.HTML(http.StatusOK, "userList.html", gin.H{
-		"users": users,
+		"users":       users,
+		"IsLoggedIn":  isLoggedIn,
+		"CurrentUser": currentUser,
+		"userRole":    userRole,
 	})
 }
 
@@ -51,11 +71,14 @@ func (controller *UsersController) Update(ctx *gin.Context) {
 	phone := ctx.PostForm("phone")
 	dob := ctx.PostForm("dob")
 	address := ctx.PostForm("address")
-	dobTime, err := time.Parse("2006-01-02", dob)
-	if err != nil {
-		fmt.Print("date wrong")
+	var dobTime *time.Time
+	if dob != "" {
+		parsedDOB, err := time.Parse("2006-01-02", dob)
+		if err != nil {
+			fmt.Print("Invalid date of birth")
+		}
+		dobTime = &parsedDOB
 	}
-
 	id, err := strconv.Atoi(userId)
 	helper.ErrorPanic(err)
 	if method := ctx.Request.Header.Get("X-HTTP-Method-Override"); method == "PUT" {
@@ -82,16 +105,20 @@ func (controller *UsersController) Update(ctx *gin.Context) {
 		// Convert backslashes to forward slashes
 		photoPath = filepath.ToSlash(photoPath)
 	}
+	userID, err := getCurrentUseID(ctx)
+	if err != nil {
+		helper.ErrorPanic(err)
+	}
 	updateUserRequest := request.UpdateUserRequest{
-		Id:              id,
-		Username:        username,
-		Email:           email,
-		Type:            utype,
-		Phone:           phone,
-		Address:         address,
-		Updated_User_ID: id,
-		Date_Of_Birth:   &dobTime,
-		Profile_Photo:   photoPath,
+		Id:            id,
+		Username:      username,
+		Email:         email,
+		Type:          utype,
+		Phone:         phone,
+		Address:       address,
+		UpdateUserId:  userID,
+		Date_Of_Birth: dobTime,
+		Profile_Photo: photoPath,
 	}
 	controller.userService.Update(updateUserRequest)
 	ctx.Redirect(http.StatusFound, "/users")
@@ -100,17 +127,36 @@ func (controller *UsersController) Update(ctx *gin.Context) {
 
 // user create form
 func (controller *UsersController) CreateUser(ctx *gin.Context) {
-	ctx.HTML(http.StatusOK, "usercreateform.html", gin.H{})
+	userID, err := getCurrentUserID(ctx)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/")
+		return
+	}
+	currentUser := controller.userService.FindById(userID)
+	isLoggedIn := getIsLoggedIn(ctx)
+	ctx.HTML(http.StatusOK, "usercreateform.html", gin.H{
+		"IsLoggedIn":  isLoggedIn,
+		"CurrentUser": currentUser,
+	})
 }
 
 // user update form
 func (controller *UsersController) UpdateForm(ctx *gin.Context) {
+	isLoggedIn := getIsLoggedIn(ctx)
+	userID, err := getCurrentUserID(ctx)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/")
+		return
+	}
+	currentUser := controller.userService.FindById(userID)
 	userId := ctx.Param("userId")
 	id, err := strconv.Atoi(userId)
 	helper.ErrorPanic(err)
 	user := controller.userService.FindById(id)
 	ctx.HTML(http.StatusOK, "userupdate.html", gin.H{
-		"User":     user,
-		"IsUpdate": true,
+		"User":        user,
+		"IsUpdate":    true,
+		"IsLoggedIn":  isLoggedIn,
+		"CurrentUser": currentUser,
 	})
 }

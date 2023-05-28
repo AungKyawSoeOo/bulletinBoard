@@ -6,13 +6,13 @@
 
     .container-fluid {
         .navbar-brand {
-            color: #000000;
+            color: #5e5a5a;
         }
 
         .navbar-nav {
             .nav-item {
                 .nav-link {
-                    color: #000000;
+                    color: #5e5a5a;
                     font-size: 18px;
                 }
 
@@ -30,7 +30,7 @@
 
 }
 
-.foot{
+.foot {
     color: #000000;
     background-color: #ffffff;
     width: 100%;
@@ -39,3 +39,14 @@
     -webkit-box-shadow: -3px -15px 11px 2px rgba(241, 234, 234, 0.71);
     -moz-box-shadow: -3px -15px 11px 2px rgba(241, 234, 234, 0.71);
 }
+
+.grey-bg {
+    color: #5e5a5a !important;
+}
+
+
+            .dp{
+                margin-left: 300px !important;
+                color:red;
+            }
+      

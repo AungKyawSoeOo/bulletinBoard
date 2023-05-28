@@ -1,22 +1,37 @@
 
-<label for="username">Username:</label>
-<input class="form-control" type="text" id="username"
-    name="username" value="{{ if .User.Username }}{{ .User.Username }}{{ end }}"
-    required>
-<label for="email">Email:</label>
-<input class="form-control" type="email" id="email" name="email"
-    value="{{ if .User.Email }}{{ .User.Email }}{{ end }}" required>
+<label for="username" class="mb-2 grey">Username</label>
+<input class="form-control fcon" type="text" id="username" name="username"
+    value="{{ if .User.Username }}{{ .User.Username }}{{ end }}">
+{{ with .Errors.Username }}
+<p class="error" id="userError">{{.}}</p>
+{{ end }}
+
+<label for="email" class="mb-2 mt-3 grey">Email</label>
+<input class="form-control fcon" type="email" id="email" name="email"
+    value="{{ if .User.Email }}{{ .User.Email }}{{ end }}">
+{{ with .Errors.Email }}
+<p class="error" id="emailError">{{.}}</p>
+{{ end }}
+{{ with .Errors.EmailExists }}
+<p class="error" id="emailExistsError">{{.}}</p>
+{{ end }}
 
 {{ if not .IsUpdate }}
-<label for="password">Password:</label>
-<input class="form-control" type="password" id="password"
-    name="password" value="{{ if .User.Password }}{{ .User.Password }}{{ end }}">
+<label for="password" class="mb-2 mt-3 grey">Password</label>
+<input class="form-control fcon" type="password" id="password" name="password"
+    value="{{ if .User.Password }}{{ .User.Password }}{{ end }}">
+{{ with .Errors.Password }}
+<p class="error" id="passwordError">{{.}}</p>
+{{ end }}
 
-<label for="password">Password Confirmation:</label>
-<input class="form-control" type="password" id="cpassword"
-    name="cpassword">
-{{end}}
-<label for="type">Type</label>
+<label for="password" class="mb-2 mt-3  grey">Password Confirmation</label>
+<input class="form-control fcon" type="password" id="confirmPassword" name="confirmPassword">
+{{ with .Errors.ConfirmPassword }}
+<p class="error" id="confirmPasswordError">{{.}}</p>
+{{ end }}
+
+{{ end }}
+<label for="type" class="mb-2 mt-3  grey">Type</label>
 <select class="form-select" aria-label="Default select example" name="type"
     id="type">
     {{if eq .User.Type "0"}}
@@ -28,18 +43,19 @@
     {{end}}
 </select>
 
-<label for="phone">Phone</label>
-<input class="form-control" type="text" id="phone"
+<label for="phone" class="mb-2 mt-3  grey">Phone</label>
+<input class="form-control fcon" type="text" id="phone"
     name="phone" value="{{ if .User.Phone }}{{ .User.Phone }}{{ end }}">
 
-<label for="dob">Date Of Birth</label>
-<input class="form-control" name="dob" id="dob" type="date"
+<label for="dob" class="mb-2 mt-3  grey">Date Of Birth</label>
+<input class="form-control fcon" name="dob" id="dob" type="date"
     value="{{ if .User.Date_Of_Birth }}{{ .User.Date_Of_Birth.Format "2006-01-02"
     }}{{ end }}" />
 
-<label for="address">Address</label>
-<textarea class="form-control" name="address" id="address" cols="30" rows="10">
+<label for="address" class="mb-2 mt-3  grey">Address</label>
+<textarea class="form-control fcon" name="address" id="address" cols="30"
+    rows="10">
     {{ if .User.Address }}{{ .User.Address }}{{ end }}
 </textarea>
-<label for="profile" class="form-label">Profile</label>
-<input class="form-control" type="file" id="photo" name="photo">
+<label for="profile" class="form-label mt-3  mb-2 grey">Profile</label>
+<input class="form-control fcon" type="file" id="photo" name="photo">

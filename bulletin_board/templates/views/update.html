@@ -2,22 +2,22 @@
 <html>
   {{ template "header.html" }}
   <body>
-    {{ template "common_header.html" }}
+    {{ template "common_header.html" .}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
-    <h2 class="text-center text-primary mt-5">Update Post</h2>
-    <div class="container">
-      <form action="/posts/{{ .Tag.Id }}" method="post" class="createForm" id="updateForm">
+    <h2 class="text-center text-primary mt-5 mb-3 hgrey">Update Post</h2>
+    <div class="container w-50">
+      <form action="/posts/{{ .Tag.Id }}" method="post" class="createForm form-container" id="updateForm">
         <input type="hidden" class="form-control" name="_method" value="PUT">
         {{ template "postform.html" . }}
-        <div class="form-check form-switch">
+        <div class="form-check form-switch mt-3">
           <input class="form-check-input" name="status" type="checkbox"
             role="switch"
             id="status" {{if eq .Tag.Status 1}}checked{{end}}>
         </div>
-        <button type="button" class="btn btn-primary"
+        <a href="/posts" class="btn btn-secondary cancel-btn mt-3 me-2">Cancel</a>
+        <button type="button" class="btn btn-primary create-btn mt-3"
           onclick="showConfirmation()">Update</button>
-        <a href="/posts" class="btn btn-secondary">Back</a>
       </form>
     </div>
     <div id="overlay" class="overlay">

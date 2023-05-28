@@ -46,6 +46,13 @@ func IsAuth(usersInterface interfaces.UsersInterface) gin.HandlerFunc {
 
 		ctx.Set("currentUser", result.Username)
 		ctx.Set("Id", id)
+
+		// Check if the user is an admin
+		role := result.Type
+
+		// Set the user's role in the context
+		ctx.Set("UserRole", role)
+
 		ctx.Next()
 	}
 }

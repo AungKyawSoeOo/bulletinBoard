@@ -5,8 +5,6 @@ function showConfirmation() {
   document.getElementById("confirmDescription").textContent =
     document.getElementById("description").value;
 
-  // Check the checkbox's checked state and set the status confirmation text accordingly
-  // document.getElementById("confirmStatus").textContent ="eierij"
   var statusCheckbox = document.getElementById("status");
   var statusValue = statusCheckbox.checked ? "Active" : "Inactive";
 
@@ -53,23 +51,3 @@ function cancelCreate() {
   document.getElementById("overlay").style.display = "none";
 }
 
-var titleInput = document.getElementById("title");
-titleInput.addEventListener("input", function () {
-  var titleError = document.getElementById("titleError");
-  if (titleInput.value.trim() !== "") {
-    titleError.innerHTML = "";
-  } else {
-    titleError.innerHTML = "Title field is required";
-  }
-});
-
-// Description input event listener
-var descriptionInput = document.getElementById("description");
-descriptionInput.addEventListener("input", function () {
-  var descriptionError = document.getElementById("descriptionError");
-  if (descriptionInput.value.trim() !== "") {
-    descriptionError.innerHTML = "";
-  } else {
-    descriptionError.innerHTML = "Description field is required";
-  }
-});

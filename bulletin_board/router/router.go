@@ -5,8 +5,6 @@ import (
 	interfaces "gin_test/bulletin_board/dao/user"
 	middlewares "gin_test/bulletin_board/middleware"
 
-	"net/http"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -19,9 +17,9 @@ func NewRouter(authController *controller.AuthController, userController *contro
 	router.Use(cors.New(config))
 	router.LoadHTMLGlob("templates/**/*")
 	router.Static("/static", "./static/")
-	router.GET("", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "welcome home")
-	})
+	// router.GET("", func(ctx *gin.Context) {
+	// 	ctx.JSON(http.StatusOK, "welcome home")
+	// })
 
 	apiRouter := router.Group("/")
 	AuthRouter(apiRouter, authController)
@@ -54,9 +52,12 @@ func AuthRouter(router *gin.RouterGroup, authController *controller.AuthControll
 func UsersRouter(router *gin.RouterGroup, usersInterface interfaces.UsersInterface, usersController *controller.UsersController) {
 	userRouter := router.Group("/users")
 	{
-		userRouter.GET("", middlewares.IsAuth(usersInterface), usersController.GetUsers)
+		userRouter.GET("", middlewares.IsAuth(usersInterface), func(ctx *gin.Context) {
+			userRole := ctx.GetString("UserRole")
+			usersController.GetUsers(ctx, userRole)
+		})
 		userRouter.GET("/create", middlewares.IsAuth(usersInterface), usersController.CreateUser)
-		userRouter.GET("/update/:userId", middlewares.IsAuth(usersInterface), usersController.UpdateForm)
+		userRouter.GET("/update/:userId", middlewares.IsAuth(usersInterface), middlewares.IsAdmin(usersInterface), usersController.UpdateForm)
 		userRouter.DELETE("/:userId", middlewares.IsAuth(usersInterface), usersController.Delete)
 		userRouter.POST("/:userId", middlewares.IsAuth(usersInterface), usersController.Update)
 	}
@@ -69,13 +70,17 @@ func TagsRouter(router *gin.RouterGroup, PostsController *controller.PostControl
 		tagRouter.GET("/create", PostsController.CreateForm)
 		// tagRouter.GET("/createConfirm", PostsController.CreateConfirmForm)
 		tagRouter.GET("/update/:tagId", middlewares.IsAuth(userInterface), PostsController.UpdateForm)
-		tagRouter.GET("", middlewares.IsAuth(userInterface), PostsController.FindAll)
+		tagRouter.GET("", PostsController.FindAll)
 		tagRouter.GET("/:tagId", middlewares.IsAuth(userInterface), PostsController.FindById)
 		tagRouter.POST("", middlewares.IsAuth(userInterface), func(ctx *gin.Context) {
 			userId := ctx.GetInt("Id")
 			PostsController.Create(ctx, userId)
 		})
-		tagRouter.POST("/:tagId", middlewares.IsAuth(userInterface), PostsController.Update)
+		tagRouter.POST("/:tagId", middlewares.IsAuth(userInterface), func(ctx *gin.Context) {
+			userId := ctx.GetInt("Id")
+			PostsController.Update(ctx, userId)
+		})
 		tagRouter.DELETE("/:tagId", middlewares.IsAuth(userInterface), PostsController.Delete)
 	}
+	router.GET("/", PostsController.FindAll)
 }

@@ -55,14 +55,15 @@ func (u *UserServiceImpl) FindById(userId int) response.UserResponse {
 	userData, err := u.UsersInterface.FindById(userId)
 	helper.ErrorPanic(err)
 	userResponse := response.UserResponse{
-		Id:            userData.Id,
-		Username:      userData.Username,
-		Email:         userData.Email,
-		Type:          userData.Type,
-		Phone:         userData.Phone,
-		Address:       userData.Address,
-		Date_Of_Birth: userData.Date_Of_Birth,
-		Profile_Photo: userData.Profile_Photo,
+		Id:              userData.Id,
+		Username:        userData.Username,
+		Email:           userData.Email,
+		Type:            userData.Type,
+		Phone:           userData.Phone,
+		Address:         userData.Address,
+		Date_Of_Birth:   userData.Date_Of_Birth,
+		Profile_Photo:   userData.Profile_Photo,
+		Updated_User_ID: userData.UpdateUserId,
 	}
 	return userResponse
 }
@@ -77,7 +78,7 @@ func (u *UserServiceImpl) Update(users request.UpdateUserRequest) error {
 	userData.Phone = users.Phone
 	userData.Address = users.Address
 	userData.Date_Of_Birth = users.Date_Of_Birth
-	userData.UpdateUserId = users.Updated_User_ID
+	userData.UpdateUserId = users.UpdateUserId
 	userData.Profile_Photo = users.Profile_Photo
 	uperr := u.UsersInterface.Update(userData)
 	if uperr != nil {

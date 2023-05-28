@@ -2,15 +2,16 @@
 <html>
     {{ template "header.html" }}
     <body>
-        {{ template "common_header.html" }}
-        <h2>Create</h2>
-        <div class="container">
+        {{ template "common_header.html" .}}
+        <h2 class="text-center mt-5 greyBack">Post Create</h2>
+        <div class="container w-50 form-container mt-5">
             <form action="/posts/" method="post" class="createForm"
                 id="createForm">
                 {{ template "postform.html" . }}
-                <button class="btn btn-primary mt-3"
+                <a class="btn btn-secondary cancel-btn mt-3" href="/posts/">Cancel</a>
+                <button class="btn btn-primary mt-3 ms-2 create-btn"
                     onclick="showConfirmation()" type="button">Create</button>
-                <a class="btn btn-secondary mt-3" href="/posts/">Cancel</a>
+
             </form>
 
             <div id="overlay" class="overlay">

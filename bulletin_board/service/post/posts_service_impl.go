@@ -6,20 +6,23 @@ import (
 	"gin_test/bulletin_board/data/response"
 	"gin_test/bulletin_board/helper"
 	"gin_test/bulletin_board/model"
+	service "gin_test/bulletin_board/service/user"
 
 	"github.com/go-playground/validator/v10"
 )
 
-func NewPostsRepositoryImpl(postInterface postinterfaces.PostsInterface, validate *validator.Validate) PostsService {
+func NewPostsRepositoryImpl(postInterface postinterfaces.PostsInterface, userService service.UserService, validate *validator.Validate) PostsService {
 	return &PostsServiceImpl{
 		postsInterface: postInterface,
 		validate:       validate,
+		userService:    userService,
 	}
 }
 
 type PostsServiceImpl struct {
 	postsInterface postinterfaces.PostsInterface
 	validate       *validator.Validate
+	userService    service.UserService
 }
 
 // Create implements TagsService
@@ -56,13 +59,25 @@ func (t *PostsServiceImpl) FindAll() []response.PostResponse {
 	result := t.postsInterface.FindAll()
 	var tags []response.PostResponse
 	for _, value := range result {
+		creator := t.userService.FindById(value.CreateUserId)
+		var updatorUsername string
+		if value.UpdateUserId != 0 {
+			updator := t.userService.FindById(value.UpdateUserId)
+			updatorUsername = updator.Username
+		}
+
+		// fmt.Print(updator)
 		tag := response.PostResponse{
 			Id:           value.Id,
 			Title:        value.Title,
 			Description:  value.Description,
 			Status:       value.Status,
 			CreatedAt:    value.CreatedAt,
+			UpdatedAt:    value.UpdatedAt,
 			CreateUserId: value.CreateUserId,
+			UpdateUserId: value.UpdateUserId,
+			Creator:      creator.Username,
+			Updator:      updatorUsername,
 		}
 		tags = append(tags, tag)
 	}
@@ -83,12 +98,20 @@ func (t *PostsServiceImpl) FindById(tagsId int) response.PostResponse {
 }
 
 // Update implements TagsService
-func (t *PostsServiceImpl) Update(posts request.UpdatePostsRequest) error {
+func (t *PostsServiceImpl) Update(posts request.UpdatePostsRequest, userId int) error {
+	// err := t.validate.Struct(posts)
+	// if err != nil {
+	// 	if validationErrs, ok := err.(validator.ValidationErrors); ok {
+	// 		return validationErrs
+	// 	}
+	// 	return err
+	// }
 	postData, err := t.postsInterface.FindById(posts.Id)
 	helper.ErrorPanic(err)
 	postData.Title = posts.Title
 	postData.Description = posts.Description
 	postData.Status = *posts.Status
+	postData.UpdateUserId = userId
 	uerr := t.postsInterface.Update(postData)
 	if uerr != nil {
 		return err

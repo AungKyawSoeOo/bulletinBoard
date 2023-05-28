@@ -1,6 +1,59 @@
 body {
+
     color: #4a3f3f;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.form-container {
+    border-radius: 5px;
+    padding: 20px 35px !important;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+
+
+.errorM{
+    color:#eb0808  !important;
+}
+
+.fcon {
+    border: 1px solid #b9c5ea !important;
+    margin-bottom: 8px !important;
+}
+
+.cancel-btn,
+.create-btn {
+    width: 17%;
+}
+
+.grey {
+    color: #5e5a5a;
+    font-size: 18px;
+}
+
+.commonGrey {
+    color: #5e5a5a;
+}
+
+input[type=checkbox]:checked {
+    background-color: #5e5a5a !important;
+    border-color: #5e5a5a;
+}
+
+.pphoto {
+    width: 10%;
+    height: 10%;
+    border-radius: 50%;
+    display: block;
+    margin-top: 10px;
+}
+
+.text-center.text-primary.hgrey {
+    color: #5e5a5a !important;
+}
+
+.text-center.mt-5.greyBack {
+    color: #5e5a5a;
 }
 
 .edit,

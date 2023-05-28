@@ -41,8 +41,8 @@ func main() {
 
 	// Posts
 	postsInterface := postinterfaces.NewPostsRepositoryImpl(config.DB)
-	postsService := postService.NewPostsRepositoryImpl(postsInterface, validate)
-	postsController := controller.NewPostsController(postsService)
+	postsService := postService.NewPostsRepositoryImpl(postsInterface, userService, validate)
+	postsController := controller.NewPostsController(postsService, userService)
 
 	routes := router.NewRouter(authController, userController, postsController, userInterface)
 

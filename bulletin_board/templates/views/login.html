@@ -3,14 +3,16 @@
     {{ template "header.html" }}
     <body>
         {{ template "common_header.html" }}
-        <h2 class="text-center mt-5">Login</h2>
-        <div class="container">
-            <form action="/auth/login" method="post" class="loginForm">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email"
+        <h2 class="text-center mt-5 commonGrey">Login</h2>
+        <div class="container w-50">
+            <form action="/auth/login" method="post"
+                class="loginForm form-container">
+                <label for="email" class="mb-2  grey">Email:</label>
+                <input type="email" class="form-control fcon" id="email"
+                    name="email"
                     required>
-                <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password"
+                <label for="password" class="mb-2 mt-3 grey">Password:</label>
+                <input type="password" class="form-control fcon" id="password"
                     name="password" required>
                 <button class="btn btn-primary mt-5" type="submit">Login</button>
             </form>

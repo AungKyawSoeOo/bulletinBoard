@@ -3,7 +3,7 @@ package interfaces
 import "gin_test/bulletin_board/model"
 
 type UsersInterface interface {
-	Save(users model.User)
+	Save(users model.User) error
 	Update(users model.User) error
 	Delete(userId int)
 	FindById(userId int) (model.User, error)

@@ -30,7 +30,6 @@ func NewAuthServiceImpl(usersInterface interfaces.UsersInterface, validate *vali
 // FindByEmail implements Authservice
 func (auth *AuthServiceImpl) FindByEmail(email string) model.User {
 	user, _ := auth.UsersInterface.FindByEmail(email)
-
 	return user
 }
 
@@ -60,7 +59,15 @@ func (auth *AuthServiceImpl) Login(users request.LoginRequest) (string, error) {
 }
 
 // Register implements Authservice
-func (auth *AuthServiceImpl) Register(users request.CreateUserRequest) {
+func (auth *AuthServiceImpl) Register(users request.CreateUserRequest) error {
+	err := auth.Validate.Struct(users)
+	if err != nil {
+		if validationErrs, ok := err.(validator.ValidationErrors); ok {
+			return validationErrs
+		}
+		return err
+	}
+
 	hashedPassword, err := utils.HashPassword(users.Password)
 	helper.ErrorPanic(err)
 
@@ -73,7 +80,12 @@ func (auth *AuthServiceImpl) Register(users request.CreateUserRequest) {
 		Date_Of_Birth: users.Date_Of_Birth,
 		Type:          users.Type,
 		Profile_Photo: users.Profile_Photo,
+		CreateUserId:  users.Created_User_ID,
 	}
 	fmt.Print(newUser)
-	auth.UsersInterface.Save(newUser)
+	uerr := auth.UsersInterface.Save(newUser)
+	if uerr != nil {
+		return uerr
+	}
+	return nil
 }

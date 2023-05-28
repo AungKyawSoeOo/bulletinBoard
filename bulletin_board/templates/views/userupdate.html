@@ -2,21 +2,23 @@
 <html>
     {{ template "header.html" }}
     <body>
-        {{ template "common_header.html" }}
+        {{ template "common_header.html" .}}
         <h2 class="text-center mt-5">User Update</h2>
-        <div class="container">
+        <div class="container w-50 form-container">
             <form action="/users/{{ .User.Id }}" method="post"
                 class="createForm"
                 id="UserupdateForm" enctype="multipart/form-data">
+
                 <input type="hidden" class="form-control" name="_method"
                     value="PUT">
                 {{ template "userformcommon.html" . }}
-                <img src="/{{ .User.Profile_Photo }}" alt="Profile Photo">
+
                 <!-- <img src="/static/images/1685025554_a2.png" alt="Profile Photo"> -->
-   
-                {{.User.Profile_Photo}}
-                {{.User.Id}}
-                <button onclick="showUserConfirmation()" type="button">Submit</button>
+                <img src="/{{ .User.Profile_Photo }}" class="pphoto"
+                    alt="Profile Photo">
+                <a href="/users" class="btn btn-secondary mt-2">Cancel</a>
+                <button onclick="showUserConfirmation()" type="button"
+                    class="btn btn-primary mt-2">Submit</button>
             </form>
 
             <div id="overlay" class="overlay">

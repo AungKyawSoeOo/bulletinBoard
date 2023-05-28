@@ -15,6 +15,7 @@ type UserResponse struct {
 	CreatedAt       time.Time  `json:"created_at"`
 	UpdatedAt       time.Time  `json:"updated_at"`
 	Created_User_ID int        `json:"created_user_id"`
+	Updated_User_ID int        `json:"updated_user_id"`
 	// Posts    []PostResponse `json:"posts"`
 }
 
