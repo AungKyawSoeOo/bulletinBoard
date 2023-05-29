@@ -46,9 +46,9 @@
             });
         }
     </script>
-   
+
         <a href="/users/create" class="btn btn-primary mt-5 ms-3">Create User</a>
-   
+
         <div class="container-fluid mt-5">
             <table class="table  .table-responsive bs-table">
                 <thead>
@@ -61,34 +61,40 @@
                         <th scope="col">Address</th>
                         <th scope="col">Created_date</th>
                         <th scope="col">Updated_date</th>
-                        {{ if eq $.userRole "1" }}
                         <th scope="col">Operation</th>
-                        {{end}}
                     </tr>
                 </thead>
                 <tbody>
                     <script>var rowIndex = 1;</script>
                     {{range $index, $user := .users}}
                     <tr class="user-row"
-                    data-user-id="{{.Id}}"
-                    data-username="{{.Username}}"
-                    data-type="{{.Type}}"
-                    data-phone="{{.Phone}}"
-                    data-dob="{{.Date_Of_Birth}}"
-                    data-address="{{.Address}}"
-                    data-email="{{.Email}}"
-                    onmouseover="highlightRow(this)"
-                    onmouseout="unhighlightRow(this)"
-                    onclick="showUserDetail(
+                        data-user-id="{{.Id}}"
+                        data-username="{{.Username}}"
+                        data-type="{{.Type}}"
+                        data-phone="{{.Phone}}"
+                        data-dob="{{.Date_Of_Birth}}"
+                        data-address="{{.Address}}"
+                        data-email="{{.Email}}"
+                        data-created-date="{{.CreatedAt}}"
+                        data-user-created-by="{{.Creator}}"
+                        data-updated-date="{{.UpdatedAt}}"
+                        data-user-updated-by="{{.Updator}}"
+                        onmouseover="highlightRow(this)"
+                        onmouseout="unhighlightRow(this)"
+                        onclick="showUserDetail(
                         this.getAttribute('data-user-id'),
                         this.getAttribute('data-username'),
                         this.getAttribute('data-type'),
                         this.getAttribute('data-phone'),
                         this.getAttribute('data-dob'),
-                        this.getAttribute('data-address')
-                    )"
-                    >
-                    <script>document.write('<th scope="row">' + rowIndex + '</th>'); </script>
+                        this.getAttribute('data-address'),
+                        this.getAttribute('data-created-date'),
+                        this.getAttribute('data-post-created-by'),
+                        this.getAttribute('data-updated-date'),
+                        this.getAttribute('data-user-updated-by')
+                    )">
+                        <script>document.write('<th scope="row">' + rowIndex + '</th>');
+                        </script>
                         <td>{{.Username}}</td>
                         <td>{{if eq .Type "0"}}User{{else}}Admin{{end}}</td>
 
@@ -102,14 +108,14 @@
                         <td>{{.CreatedAt.Format "2006-01-02"}}</td>
                         <td>{{ .UpdatedAt.Format "2006-01-02"}}</td>
                         <td>
-                            {{ if eq $.userRole "1" }} <!-- Check if userRole is "1" (admin) -->
+
                             <a class="btn btn-outline-primary"
                                 onclick="event.stopPropagation();"
                                 href="/users/update/{{.Id}}">Edit</a>
                             <a class="btn btn-outline-danger"
                                 href="/users/{{.Id}}"
                                 onclick="event.stopPropagation(); sendDelete(event, this.href, '{{.Id}}', '{{.Username}}', '{{.Type}}', '{{.Phone}}', '{{.Date_Of_Birth}}' , '{{.Address}}')">Delete</a>
-                        {{ end }}
+
                         </td>
                     </tr>
                     <script>rowIndex++;</script>

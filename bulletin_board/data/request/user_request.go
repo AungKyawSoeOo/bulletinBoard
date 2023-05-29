@@ -25,6 +25,7 @@ type UpdateUserRequest struct {
 	Address       string     `json:"address"`
 	Date_Of_Birth *time.Time `json:"date_of_birth"`
 	UpdateUserId  int        `json:"updated_user_id"`
+	UpdatedAt    time.Time
 }
 
 type LoginRequest struct {

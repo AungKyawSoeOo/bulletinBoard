@@ -10,10 +10,21 @@ body {
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
+.nav-posts,
+.nav-users {
+    display: block;
+    padding: 3px 20px !important;
+}
 
+.nav-posts:hover,
+.nav-users:hover {
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    border-radius: 5px;
+}
 
-.errorM{
-    color:#eb0808  !important;
+.errorM {
+    color: #eb0808 !important;
 }
 
 .fcon {

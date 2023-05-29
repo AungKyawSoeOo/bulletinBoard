@@ -2,25 +2,25 @@
 
 <nav class="navbar navbar-expand-lg nav-bg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Bulletin Board</a>
+        <a class="navbar-brand" href="/">Bulletin Board</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarNavDarkDropdown"
             aria-controls="navbarNavDarkDropdown" aria-expanded="false"
             aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item  me-2">
-                    <a class="nav-link" href="/posts">Posts</a>
+                    <a class="nav-link nav-posts" href="/posts">Posts</a>
                 </li>
-                {{ if  .IsLoggedIn }}
+                {{ if .IsLoggedIn }}
                 <li class="nav-item me-4">
-                    <a class="nav-link" href="/users">Users</a>
+                    <a class="nav-link nav-users" href="/users">Users</a>
                 </li>
                 {{end}}
-                <li class="nav-item dropdown dp me-5">
+                <li class="nav-item dropdown  me-5">
                     {{ if not .IsLoggedIn }}
                     <button class="btn btn-dark dropdown-toggle"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,27 +28,29 @@
                     </button>
                     {{ else }}
                     <button class="btn btn-dark dropdown-toggle me-5"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    {{.CurrentUser.Username}}
-                </button>
-                   
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        {{.CurrentUser.Username}}
+                    </button>
+
                     {{end}}
                     <ul class="dropdown-menu dropdown-menu-dark">
                         {{ if not .IsLoggedIn }}
-                            <li><a class="dropdown-item" href="/register">Register</a></li>
-                            <li><a class="dropdown-item" href="/login">Login</a></li>
+                        <li><a class="dropdown-item" href="/register">Register</a></li>
+                        <li><a class="dropdown-item" href="/login">Login</a></li>
                         {{ else }}
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li style="position: relative;">
-                                <a class="dropdown-item" href="#">
-                                    <form action="/auth/logout" method="post" style="display: inline-block; width: 100%; height: 100%;">
-                                        <button type="submit" style="width: 100%; height: 100%; padding: 0; margin: 0; border: none; background: none; text-align: left;color: #ffffff;">
-                                            Logout
-                                        </button>
-                                    </form>
-                                </a>
-                            </li>
-                            
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li style="position: relative;">
+                            <a class="dropdown-item" href="#">
+                                <form action="/auth/logout" method="post"
+                                    style="display: inline-block; width: 100%; height: 100%;">
+                                    <button type="submit"
+                                        style="width: 100%; height: 100%; padding: 0; margin: 0; border: none; background: none; text-align: left;color: #ffffff;">
+                                        Logout
+                                    </button>
+                                </form>
+                            </a>
+                        </li>
+
                         {{ end }}
                     </ul>
                 </li>
@@ -57,4 +59,3 @@
     </div>
 </nav>
 {{end}}
-

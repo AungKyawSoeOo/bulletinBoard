@@ -1,39 +1,49 @@
 {{ define "register.html" }}
 <html>
-{{ template "header.html" }}
+  {{ template "header.html" }}
 
-<body>
-  {{ template "common_header.html" }}
-  <h2 class="text-center mt-5 commonGrey">Register</h2>
-  <div class="container w-50">
-    <form action="/auth/register" method="post" class="registerForm form-container" enctype="multipart/form-data">
-      <input type="hidden" name="source" value="register" />
-      <label for="username" class="mb-2 grey">Username</label>
-      <input class="form-control fcon" type="text" id="username" name="username" />
-      {{ with .Errors.Username }}
-      <p class="errorM" id="userError">{{.}}</p>
-      {{ end }}
+  <body>
+    {{ template "common_header.html" }}
+    <h2 class="text-center mt-5 commonGrey">Register</h2>
+    <div class="container w-50">
+      <form action="/auth/register" method="post"
+        class="registerForm form-container" enctype="multipart/form-data">
+        <input type="hidden" name="source" value="register" />
+        <label for="username" class="mb-2 grey">Username</label>
+        <input class="form-control fcon" type="text" id="username"
+          name="username" />
+        {{ with .Errors.Username }}
+        <p class="errorM" id="userError">{{.}}</p>
+        {{ end }}
 
-      <label for="email" class="mb-2 mt-3 grey">Email</label>
-      <input class="form-control fcon" type="email" id="email" name="email" />
-      {{ with .Errors.Email }}
-      <p class="errorM" id="emailError">{{.}}</p>
-      {{ end }}
-      {{ with .Errors.EmailExists }}
-      <p class="errorM" id="emailExistsError">{{.}}</p>
-      {{ end }}
+        <label for="email" class="mb-2 mt-3 grey">Email</label>
+        <input class="form-control fcon" type="email" id="email" name="email" />
+        {{ with .Errors.Email }}
+        <p class="errorM" id="emailError">{{.}}</p>
+        {{ end }}
+        {{ with .Errors.EmailExists }}
+        <p class="errorM" id="emailExistsError">{{.}}</p>
+        {{ end }}
 
-      <label for="password" class="mb-2 mt-3 grey">Password</label>
-      <input class="form-control fcon" type="password" id="password" name="password" />
-      {{ with .Errors.Password }}
-      <p class="errorM" id="passwordError">{{.}}</p>
-      {{ end }}
+        <label for="password" class="mb-2 mt-3 grey">Password</label>
+        <input class="form-control fcon" type="password" id="password"
+          name="password" />
+        {{ with .Errors.Password }}
+        <p class="errorM" id="passwordError">{{.}}</p>
+        {{ end }}
 
-      <button type="submit" class="btn btn-primary mt-3">Register</button>
-    </form>
-  </div>
-  {{ template "footer.html" }}
-</body>
+        <label for="password" class="mb-2 mt-3  grey">Password Confirmation</label>
+        <input class="form-control fcon" type="password" id="confirmPassword"
+          name="confirmPassword">
+        {{ with .Errors.ConfirmPassword }}
+        <p class="errorM" id="confirmPasswordError">{{.}}</p>
+        {{ end }}
+
+        <button type="submit" class="btn btn-primary mt-3">Register</button>
+      </form>
+    </div>
+    {{ template "footer.html" }}
+  </body>
 
 </html>
 {{ end }}

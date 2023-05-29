@@ -8,4 +8,5 @@ type PostsInterface interface {
 	Delete(tagsId int)
 	FindById(tagsId int) (tags model.Posts, err error)
 	FindAll() []model.Posts
+	FindPostByUserId(userId int) (posts []model.Posts, err error)
 }

@@ -10,5 +10,6 @@ type PostsService interface {
 	Update(tags request.UpdatePostsRequest, userId int) error
 	Delete(tagsId int)
 	FindById(tagsId int) response.PostResponse
+	FindPostByUserId(userId int) []response.PostResponse
 	FindAll() []response.PostResponse
 }

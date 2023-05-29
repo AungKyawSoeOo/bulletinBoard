@@ -10,4 +10,5 @@ type UsersInterface interface {
 	FindAll() []model.User
 	FindByEmail(email string) (model.User, error)
 	FindByUsername(username string) (model.User, error)
+	FindUserById(userId int) (users []model.User, err error)
 }

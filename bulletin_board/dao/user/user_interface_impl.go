@@ -19,6 +19,15 @@ func NewUsersInterfaceImpl(Db *gorm.DB) UsersInterface {
 	return &UsersInterfaceImpl{Db: Db}
 }
 
+func (u *UsersInterfaceImpl) FindUserById(userId int) ([]model.User, error) {
+	var users []model.User
+	result := u.Db.Find(&users, "create_user_id = ?", userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
+}
+
 // Delete implements UsersInterface
 func (user *UsersInterfaceImpl) Delete(userId int) {
 
@@ -54,13 +63,13 @@ func (user *UsersInterfaceImpl) FindAll() []model.User {
 // }
 
 // FindById implements UsersInterface
-func (user *UsersInterfaceImpl) FindById(userId int) (model.User, error) {
-	var users model.User
-	result := user.Db.First(&users, userId)
-	if result.Error != nil {
-		return users, errors.New("user not found")
+func (u *UsersInterfaceImpl) FindById(userId int) (use model.User, err error) {
+	var user model.User
+	result := u.Db.Find(&user, userId)
+	if result != nil {
+		return user, nil
 	}
-	return users, nil
+	return user, errors.New("user is not found")
 }
 
 // FindByUsername implements UsersInterface
@@ -107,6 +116,7 @@ func (user *UsersInterfaceImpl) Update(users model.User) error {
 		Date_Of_Birth: users.Date_Of_Birth,
 		UpdateUserId:  users.UpdateUserId,
 		Profile_Photo: users.Profile_Photo,
+		UpdatedAt:     users.UpdatedAt,
 	}
 
 	result := user.Db.Model(&users).Updates(updateUsers)

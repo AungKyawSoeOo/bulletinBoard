@@ -43,6 +43,15 @@ func (t *PostsRepositoryImpl) FindById(tagsId int) (tags model.Posts, err error)
 	}
 }
 
+func (t *PostsRepositoryImpl) FindPostByUserId(userId int) ([]model.Posts, error) {
+	var posts []model.Posts
+	result := t.Db.Find(&posts, "create_user_id = ?", userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return posts, nil
+}
+
 // Save implements TagsRepository
 func (t *PostsRepositoryImpl) Save(tags model.Posts) error {
 	result := t.Db.Create(&tags)

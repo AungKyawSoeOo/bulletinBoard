@@ -3,13 +3,13 @@ package controller
 import (
 	"fmt"
 	"gin_test/bulletin_board/data/request"
+	"gin_test/bulletin_board/data/response"
 	"gin_test/bulletin_board/helper"
 	service "gin_test/bulletin_board/service/user"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"time"
-
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,8 +42,13 @@ func (controller *UsersController) GetUsers(ctx *gin.Context, userRole string) {
 		return
 	}
 	currentUser := controller.userService.FindById(userID)
+	var users []response.UserResponse
+	if currentUser.Type == "1" {
+		users = controller.userService.FindAll()
+	} else {
+		users = controller.userService.FindUserById(userID)
+	}
 
-	users := controller.userService.FindAll()
 	// helper.ResponseHandler(ctx, http.StatusOK, "Get All Users Success.", users)
 	ctx.HTML(http.StatusOK, "userList.html", gin.H{
 		"users":       users,
@@ -145,14 +150,33 @@ func (controller *UsersController) UpdateForm(ctx *gin.Context) {
 	isLoggedIn := getIsLoggedIn(ctx)
 	userID, err := getCurrentUserID(ctx)
 	if err != nil {
-		ctx.Redirect(http.StatusFound, "/")
+		ctx.Redirect(http.StatusFound, "/users")
 		return
 	}
 	currentUser := controller.userService.FindById(userID)
+	fmt.Print(currentUser)
 	userId := ctx.Param("userId")
 	id, err := strconv.Atoi(userId)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/users")
+		return
+	}
+	fmt.Print(id)
 	user := controller.userService.FindById(id)
+	fmt.Print(user.Id, "UUU")
+	if user.Id == 0 {
+		ctx.Redirect(http.StatusFound, "/users")
+		return
+	}
+	fmt.Print(user.Id, "idddd")
+
+	if currentUser.Type != "1" {
+		if userID != user.Created_User_ID {
+			ctx.Redirect(http.StatusFound, "/users")
+			return
+		}
+	}
+
 	ctx.HTML(http.StatusOK, "userupdate.html", gin.H{
 		"User":        user,
 		"IsUpdate":    true,

@@ -236,11 +236,11 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 	cookie := &http.Cookie{
 		Name:     "token",
 		Value:    token,
-		Expires:  time.Now().Add(time.Hour), // Set cookie expiration time
+		Expires:  time.Now().Add(time.Hour),
 		MaxAge:   3600,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   false, // Set to true if using HTTPS
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	}
 	ctx.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)

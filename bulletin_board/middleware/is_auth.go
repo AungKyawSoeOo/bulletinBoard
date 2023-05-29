@@ -21,7 +21,7 @@ func IsAuth(usersInterface interfaces.UsersInterface) gin.HandlerFunc {
 		// token := strings.TrimPrefix(authorizeHeader, "Bearer ")
 		cookie, err := ctx.Request.Cookie("token")
 		if err != nil || cookie.Value == "" {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": 401, "status": "Unauthorized", "message": "You are not logged in."})
+			ctx.Redirect(http.StatusFound, "/")
 			return
 		}
 		token := cookie.Value
@@ -40,7 +40,7 @@ func IsAuth(usersInterface interfaces.UsersInterface) gin.HandlerFunc {
 		result, err := usersInterface.FindById(id)
 
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": 401, "status": "Unauthorized", "message": "User not found."})
+			ctx.Redirect(http.StatusFound, "/")
 			return
 		}
 

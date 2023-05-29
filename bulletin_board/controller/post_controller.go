@@ -1,14 +1,17 @@
 package controller
 
 import (
+	"encoding/csv"
 	"errors"
 	"fmt"
 	"gin_test/bulletin_board/data/request"
 	"gin_test/bulletin_board/data/response"
 	"gin_test/bulletin_board/helper"
+	"gin_test/bulletin_board/model"
 	service "gin_test/bulletin_board/service/post"
 	uservice "gin_test/bulletin_board/service/user"
 	"os"
+	"time"
 
 	"net/http"
 	"strconv"
@@ -16,6 +19,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt"
+	"gorm.io/gorm"
 )
 
 type PostController struct {
@@ -219,10 +223,15 @@ func (controller *PostController) FindAll(ctx *gin.Context) {
 		ctx.Redirect(http.StatusFound, "/")
 		return
 	}
+
+	var tagResponse []response.PostResponse
 	if userID != 0 {
 		currentUser := controller.userService.FindById(userID)
-		tagResponse := controller.tagsService.FindAll()
-		// userName:=controller.tagsService.FindById(1)
+		if currentUser.Type == "1" {
+			tagResponse = controller.tagsService.FindAll()
+		} else {
+			tagResponse = controller.tagsService.FindPostByUserId(userID)
+		}
 
 		ctx.HTML(http.StatusOK, "index.html", gin.H{
 			"tags":        tagResponse,
@@ -231,18 +240,17 @@ func (controller *PostController) FindAll(ctx *gin.Context) {
 		})
 		return
 	}
-	tagResponse := controller.tagsService.FindAll()
-	// userName:=controller.tagsService.FindById(1)
+
+	// If userID is 0 (no user logged in), retrieve all tags without currentUser
+	tagResponse = controller.tagsService.FindAll()
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
 		"tags":       tagResponse,
 		"IsLoggedIn": isLoggedIn,
 	})
-
-	fmt.Print(isLoggedIn)
-
 }
 
+// Create Form
 func (controller *PostController) CreateForm(ctx *gin.Context) {
 	isLoggedIn := getIsLoggedIn(ctx)
 	userID, err := getCurrentUserID(ctx)
@@ -259,6 +267,22 @@ func (controller *PostController) CreateForm(ctx *gin.Context) {
 	})
 }
 
+// Upload csv form
+func (controller *PostController) UploadForm(ctx *gin.Context) {
+	isLoggedIn := getIsLoggedIn(ctx)
+	userID, err := getCurrentUserID(ctx)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/login")
+		return
+	}
+	currentUser := controller.userService.FindById(userID)
+	ctx.HTML(http.StatusOK, "upload.html", gin.H{
+		"IsLoggedIn":  isLoggedIn,
+		"CurrentUser": currentUser,
+	})
+}
+
+// Update Form
 func (controller *PostController) UpdateForm(ctx *gin.Context) {
 	isLoggedIn := getIsLoggedIn(ctx)
 	userID, err := getCurrentUserID(ctx)
@@ -269,13 +293,90 @@ func (controller *PostController) UpdateForm(ctx *gin.Context) {
 
 	currentUser := controller.userService.FindById(userID)
 
-	tagId := ctx.Param("tagId")
-	id, err := strconv.Atoi(tagId)
-	helper.ErrorPanic(err)
-	tag := controller.tagsService.FindById(id)
+	// Retrieve the post ID from the URL parameter
+	postID := ctx.Param("tagId")
+	id, err := strconv.Atoi(postID)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/posts")
+		return
+	}
+
+	post := controller.tagsService.FindById(id)
+
+	if post.Id == 0 {
+		ctx.Redirect(http.StatusFound, "/posts")
+		return
+	}
+
+	if currentUser.Type != "1" {
+		if userID != post.CreateUserId {
+			ctx.Redirect(http.StatusFound, "/posts")
+			return
+		}
+	}
+
 	ctx.HTML(http.StatusOK, "update.html", gin.H{
-		"Tag":         tag,
+		"Tag":         post,
 		"IsLoggedIn":  isLoggedIn,
 		"CurrentUser": currentUser,
 	})
+
+}
+
+func (controller *PostController) UploadPosts(ctx *gin.Context, db *gorm.DB) {
+	// initializers.ConnectDatabase()
+	// Retrieve the uploaded file
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		ctx.String(http.StatusBadRequest, fmt.Sprintf("Error uploading file: %s", err.Error()))
+		return
+	}
+
+	// Open the uploaded file
+	csvfile, err := file.Open()
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, fmt.Sprintf("Error opening file: %s", err.Error()))
+		return
+	}
+	defer csvfile.Close()
+
+	// Parse the CSV file
+	reader := csv.NewReader(csvfile)
+	records, err := reader.ReadAll()
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, fmt.Sprintf("Error reading CSV: %s", err.Error()))
+		return
+	}
+
+	// Save each row to the database
+	for i, row := range records {
+		if i == 0 {
+			continue
+		}
+		status, err := strconv.Atoi(row[2])
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, fmt.Sprintf("Error converting status: %s", err.Error()))
+			return
+		}
+
+		post := model.Posts{
+			Title:        row[0],
+			Description:  row[1],
+			Status:       status,
+			CreatedAt:    time.Now(),
+			UpdatedAt:    time.Now(),
+			CreateUserId: 2,
+			UpdateUserId: 2,
+			// Set the CreateUserId and UpdateUserId appropriately
+		}
+
+		// Save the post to the database using GORM
+		if err := db.Create(&post).Error; err != nil {
+			ctx.String(http.StatusInternalServerError, fmt.Sprintf("Error saving post: %s", err.Error()))
+			return
+		}
+	}
+
+	// Return a success message
+	ctx.String(http.StatusOK, "CSV file uploaded and processed successfully")
 }
