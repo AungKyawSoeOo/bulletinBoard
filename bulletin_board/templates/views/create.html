@@ -8,10 +8,10 @@
             <form action="/posts/" method="post" class="createForm"
                 id="createForm">
                 {{ template "postform.html" . }}
-                <a class="btn btn-secondary cancel-btn mt-3" href="/posts/">Cancel</a>
-                <button class="btn btn-primary mt-3 ms-2 create-btn"
+             
+                <button class="btn btn-primary mt-3 ms-2 create-btn w-25"
                     onclick="showConfirmation()" type="button">Create</button>
-
+                    <a class="btn btn-secondary cancel-btn mt-3 w-25" href="/posts/">Cancel</a>
             </form>
 
             <div id="overlay" class="overlay">
@@ -19,8 +19,10 @@
                     <h3>Confirmation</h3>
                     <p>Title: <span id="confirmTitle"></span></p>
                     <p>Description: <span id="confirmDescription"></span></p>
-                    <button class="btn btn-primary" onclick="confirmCreate()">Confirm</button>
-                    <button class="btn btn-secondary" onclick="cancelCreate()">Cancel</button>
+                    <button class="btn btn-primary"
+                        onclick="confirmCreate()">Confirm</button>
+                    <button class="btn btn-secondary"
+                        onclick="cancelCreate()">Cancel</button>
                 </div>
             </div>
         </div>

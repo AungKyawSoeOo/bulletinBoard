@@ -4,11 +4,11 @@
 
   <body>
     {{template "common_header.html" .}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css"
-    />
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css" />
     <script>
       function sendDelete(event, href, id, title, description, status) {
         event.preventDefault();
@@ -32,9 +32,16 @@
     {{if .IsLoggedIn}}
     <a href="posts/create/" class="btn btn-primary mt-5 ms-3">Create post</a>
     <a href="posts/upload/" class="btn btn-primary mt-5">Upload</a>
+    <form action="posts/download" method="post" class="mt-5 d-inline">
+      <button type="submit" class="btn btn-primary mt-5">Download</button>
+    </form>
+    <div class="search-container">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by Title or Description">
+    </div>
+
     {{end}}
     <div class="container-fluid">
-      <table class="table .table-responsive bs-table mt-5">
+      <table id="postTable" class="table .table-responsive bs-table mt-5">
         <thead>
           <tr>
             <th scope="col">No.</th>
@@ -46,7 +53,7 @@
             <th scope="col">Operation</th>
             {{end}}
           </tr>
-        
+
         </thead>
         <tbody>
           {{if .IsLoggedIn}}
@@ -71,9 +78,9 @@
               this.getAttribute('data-post-updated-by')
           )"
             onmouseover="highlightRow(this)"
-            onmouseout="unhighlightRow(this)"
-          >
-          <script>document.write('<th scope="row">' + rowIndex + '</th>'); </script>
+            onmouseout="unhighlightRow(this)">
+            <script>document.write('<th scope="row">' + rowIndex + '</th>');
+            </script>
             <td>{{.Title}}</td>
             <td>{{.Description}}</td>
             <td>{{.Creator}}</td>
@@ -83,23 +90,19 @@
               <a
                 class="btn btn-outline-primary"
                 href="/posts/update/{{.Id}}"
-                onclick="event.stopPropagation();"
-                >Edit</a
-              >
+                onclick="event.stopPropagation();">Edit</a>
               <a
                 class="btn btn-outline-danger"
                 href="/posts/{{.Id}}"
-                onclick="sendDelete(event, this.href, '{{.Id}}', '{{.Title}}', '{{.Description}}', '{{.Status}}');event.stopPropagation();"
-                >Delete</a
-              >
+                onclick="sendDelete(event, this.href, '{{.Id}}', '{{.Title}}', '{{.Description}}', '{{.Status}}');event.stopPropagation();">Delete</a>
             </td>
           </tr>
           <script>rowIndex++;</script>
-        
+
           {{end}} {{else}}
           <script>var rowIndex = 1;</script>
-           {{range $index, $tag := .tags}}
-         
+          {{range $index, $tag := .tags}}
+
           <tr class="post-row"
             data-post-title="{{.Title}}"
             data-post-description="{{.Description}}"
@@ -109,9 +112,9 @@
             data-post-updated-at="{{.UpdatedAt}}"
             data-post-updated-by="{{.Updator}}"
             onmouseover="highlightRow(this)"
-            onmouseout="unhighlightRow(this)"
-          >
-          <script>document.write('<th scope="row">' + rowIndex + '</th>'); </script>
+            onmouseout="unhighlightRow(this)">
+            <script>document.write('<th scope="row">' + rowIndex + '</th>');
+            </script>
             <td>{{.Title}}</td>
             <td>{{.Description}}</td>
             <td>{{.Creator}}</td>
@@ -123,6 +126,10 @@
       </table>
     </div>
     {{ template "footer.html" }}
+
+    <script>
+    document.getElementById("searchInput").addEventListener("input", search);
+    </script>
   </body>
 </html>
 {{end}}

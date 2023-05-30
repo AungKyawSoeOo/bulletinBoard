@@ -169,18 +169,37 @@ func (controller *UsersController) UpdateForm(ctx *gin.Context) {
 		return
 	}
 	fmt.Print(user.Id, "idddd")
+	isProfileUpdate := (userID == user.Id)
 
 	if currentUser.Type != "1" {
 		if userID != user.Created_User_ID {
-			ctx.Redirect(http.StatusFound, "/users")
-			return
+			if userID != user.Id {
+				ctx.Redirect(http.StatusFound, "/users")
+				return
+			}
 		}
 	}
 
 	ctx.HTML(http.StatusOK, "userupdate.html", gin.H{
-		"User":        user,
-		"IsUpdate":    true,
-		"IsLoggedIn":  isLoggedIn,
+		"User":            user,
+		"IsUpdate":        true,
+		"IsLoggedIn":      isLoggedIn,
+		"CurrentUser":     currentUser,
+		"IsProfileUpdate": isProfileUpdate,
+	})
+}
+
+// user update form
+func (controller *UsersController) ProfileForm(ctx *gin.Context) {
+	isLoggedIn := getIsLoggedIn(ctx)
+	userID, err := getCurrentUserID(ctx)
+	if err != nil {
+		ctx.Redirect(http.StatusFound, "/users")
+		return
+	}
+	currentUser := controller.userService.FindById(userID)
+	ctx.HTML(http.StatusOK, "userprofile.html", gin.H{
 		"CurrentUser": currentUser,
+		"IsLoggedIn":  isLoggedIn,
 	})
 }

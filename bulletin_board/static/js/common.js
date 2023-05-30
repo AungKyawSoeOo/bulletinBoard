@@ -50,4 +50,3 @@ function confirmUpdate() {
 function cancelCreate() {
   document.getElementById("overlay").style.display = "none";
 }
-

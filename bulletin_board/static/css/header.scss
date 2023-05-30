@@ -100,3 +100,46 @@ a {
     background-color: #f00b0b;
     color: #ffffff;
 }
+
+.pf-img {
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 73%;
+    left: 35%;
+
+}
+
+.pf-container {
+    position: relative;
+    border-radius: 5px;
+    margin: 150px auto 10px;
+    padding: 50px 3px 30px;
+    width: 50%;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+    .i-con {
+        margin-left: 1%;
+        margin-top: 10%;
+        letter-spacing: 1px;
+        text-align: center;
+        color: #5e5a5a;
+    }
+
+}
+
+.search-container {
+    width: 30%;
+    display: inline-block;
+    margin-left: 45%;
+    position: absolute;
+    top:120px;
+}
+
+.sform {
+    width: 100%;
+    display: block;
+    background-color: red;
+    padding: 30x 20px;
+}

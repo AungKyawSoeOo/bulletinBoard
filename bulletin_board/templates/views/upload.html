@@ -4,17 +4,28 @@
   <body>
     {{ template "common_header.html" .}}
     <div class="container mt-5">
-        <form action="/posts/upload"  method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="formFileSm" class="form-label">CSV File For Post</label>
-                <input class="form-control form-control-sm" id="formFileSm" type="file" name="file">
-              </div>
-              <button type="submit">Upload</button>
-        </form>
-     
+      <form action="/posts/upload" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="formFileSm" class="form-label">CSV File For Post</label>
+          <input class="form-control form-control-sm" id="formFileSm"
+            type="file" name="file">
+        </div>
+        {{ with .Errors.Nofile }}
+        <p class="errorM">{{.}}</p>
+        {{ end }}
+        {{ with .Errors.RowCount }}
+        <p class="errorM">{{.}}</p>
+        {{ end }}
+        {{ with .Errors.FileFormat }}
+        <p class="errorM">{{.}}</p>
+        {{ end }}
+        <button type="submit" class="btn btn-primary mt-2">Upload</button>
+
+      </form>
+
     </div>
 
     {{ template "footer.html" }}
-</body>
+  </body>
 </html>
 {{ end }}

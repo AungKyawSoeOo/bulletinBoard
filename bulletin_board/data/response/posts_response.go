@@ -11,7 +11,7 @@ type PostResponse struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 	CreateUserId int       `json:"created_user_id"`
 	UpdateUserId int       `json:"updated_user_id"`
-	Creator      string    `json:"created_user_name"`
-	Updator      string    `json:"updated_user_name"`
+	Creator      string    `json:"creator"`
+	Updator      string    `json:"updator"`
 	IsLoggedIn   bool      `json:"is_logged_in"`
 }

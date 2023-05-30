@@ -15,9 +15,10 @@
             role="switch"
             id="status" {{if eq .Tag.Status 1}}checked{{end}}>
         </div>
-        <a href="/posts" class="btn btn-secondary cancel-btn mt-3 me-2">Cancel</a>
-        <button type="button" class="btn btn-primary create-btn mt-3"
+      
+        <button type="button" class="btn btn-primary create-btn mt-3 w-25"
           onclick="showConfirmation()">Update</button>
+          <a href="/posts" class="btn btn-secondary cancel-btn mt-3 me-2 w-25">Cancel</a>
       </form>
     </div>
     <div id="overlay" class="overlay">

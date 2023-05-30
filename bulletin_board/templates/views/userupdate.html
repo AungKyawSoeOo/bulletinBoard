@@ -3,7 +3,13 @@
     {{ template "header.html" }}
     <body>
         {{ template "common_header.html" .}}
-        <h2 class="text-center mt-5">User Update</h2>
+        <h2 class="text-center mt-5">
+            {{ if .IsProfileUpdate }}
+            Profile Update
+            {{ else }}
+            User Update
+            {{ end }}
+        </h2>
         <div class="container w-50 form-container">
             <form action="/users/{{ .User.Id }}" method="post"
                 class="createForm"
@@ -16,9 +22,10 @@
                 <!-- <img src="/static/images/1685025554_a2.png" alt="Profile Photo"> -->
                 <img src="/{{ .User.Profile_Photo }}" class="pphoto"
                     alt="Profile Photo">
-                <a href="/users" class="btn btn-secondary mt-2">Cancel</a>
+
                 <button onclick="showUserConfirmation()" type="button"
-                    class="btn btn-primary mt-2">Submit</button>
+                    class="btn btn-primary mt-2 w-25">Edit</button>
+                <a href="/users" class="btn btn-secondary mt-2 w-25">Cancel</a>
             </form>
 
             <div id="overlay" class="overlay">

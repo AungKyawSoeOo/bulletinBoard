@@ -10,9 +10,11 @@
                 id="createUserForm" enctype="multipart/form-data">
                 <input type="hidden" name="source" value="usercreateform">
                 {{ template "userformcommon.html" . }}
+
                 <button onclick="showUserConfirmation()" type="button"
-                    class="btn btn-primary mt-5">Submit</button>
-                <a class="btn btn-secondary mt-5" href="/users">Cancel</a>
+                    class="btn btn-primary mt-5 w-25">Create</button>
+                <a class="btn btn-secondary mt-5 w-25" href="/users">Cancel</a>
+
             </form>
 
             <div id="overlay" class="overlay">

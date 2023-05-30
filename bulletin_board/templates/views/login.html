@@ -9,13 +9,16 @@
                 class="loginForm form-container">
                 <label for="email" class="mb-2  grey">Email:</label>
                 <input type="email" class="form-control fcon" id="email"
-                    name="email"
-                    required>
+                    name="email">
                 <label for="password" class="mb-2 mt-3 grey">Password:</label>
                 <input type="password" class="form-control fcon" id="password"
-                    name="password" required>
-                <button class="btn btn-primary mt-5" type="submit">Login</button>
+                    name="password">
+                {{ with .Errors.logFail }}
+                <p class="errorM" id="userError">{{.}}</p>
+                {{ end }}
+                <button class="btn btn-primary mt-4 w-100" type="submit">Login</button>
             </form>
+
         </div>
         {{ template "footer.html" }}
     </body>

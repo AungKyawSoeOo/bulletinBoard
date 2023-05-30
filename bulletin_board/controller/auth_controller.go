@@ -226,9 +226,17 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 	}
 	token, err_token := controller.AuthService.Login(loginRequest)
 	if err_token != nil {
-		helper.ResponseHandler(ctx, http.StatusBadRequest, "Invalid email or password.", nil)
+		ctx.Set("logFail", "Invalid email or password.")
+		ctx.HTML(http.StatusBadRequest, "login.html", gin.H{
+			"Errors": map[string]string{
+				"logFail": "Invalid email or password.",
+			},
+		})
 		return
+		// helper.ResponseHandler(ctx, http.StatusBadRequest, "Invalid email or password.", nil)
+		// return
 	}
+
 	// resp := response.LoginResponse{
 	// 	TokenType: "Bearer",
 	// 	Token:     token,

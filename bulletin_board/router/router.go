@@ -18,10 +18,6 @@ func NewRouter(authController *controller.AuthController, userController *contro
 	router.Use(cors.New(config))
 	router.LoadHTMLGlob("templates/**/*")
 	router.Static("/static", "./static/")
-	// router.GET("", func(ctx *gin.Context) {
-	// 	ctx.JSON(http.StatusOK, "welcome home")
-	// })
-
 	apiRouter := router.Group("/")
 	AuthRouter(apiRouter, authController)
 	UsersRouter(apiRouter, usersInterface, userController)
@@ -57,6 +53,7 @@ func UsersRouter(router *gin.RouterGroup, usersInterface interfaces.UsersInterfa
 			userRole := ctx.GetString("UserRole")
 			usersController.GetUsers(ctx, userRole)
 		})
+		userRouter.GET("/profile", middlewares.IsAuth(usersInterface), usersController.ProfileForm)
 		userRouter.GET("/create", middlewares.IsAuth(usersInterface), usersController.CreateUser)
 		userRouter.GET("/update/:userId", middlewares.IsAuth(usersInterface), usersController.UpdateForm)
 		userRouter.DELETE("/:userId", middlewares.IsAuth(usersInterface), usersController.Delete)
@@ -69,9 +66,13 @@ func TagsRouter(router *gin.RouterGroup, PostsController *controller.PostControl
 	tagRouter := router.Group("/posts")
 	{
 		tagRouter.GET("/create", PostsController.CreateForm)
+		router.POST("/posts/download", func(c *gin.Context) {
+			initializers.ConnectDatabase()
+			PostsController.DownloadPosts(c, initializers.DB)
+		})
 		tagRouter.GET("/upload", middlewares.IsAuth(userInterface), PostsController.UploadForm)
 		router.POST("/posts/upload", func(c *gin.Context) {
-			initializers.ConnectDatabase() // Call ConnectDatabase before using UploadPosts
+			initializers.ConnectDatabase()
 			PostsController.UploadPosts(c, initializers.DB)
 		})
 

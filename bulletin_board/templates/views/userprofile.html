@@ -1,0 +1,57 @@
+{{ define "userprofile.html" }}
+<html>
+    {{ template "header.html" }}
+    <body>
+        {{ template "common_header.html" .}}
+
+        <div class="container">
+
+        </div>
+        <div class="pf-container">
+            {{ if .CurrentUser.Profile_Photo}}
+            <img
+                alt="example"
+                class="img-fluid pf-img"
+                src="/{{.CurrentUser.Profile_Photo}}" />
+            {{else}}
+            <img src="/static/images/userava.png" class="img-fluid pf-img"
+                alt="Nothing">
+            {{end}}
+            <div class="i-con">
+                <h5>Name - {{.CurrentUser.Username}}</h5>
+                {{if eq .CurrentUser.Type "1"}}
+                <h5>Type - Admin</h5>
+                {{else}}
+                <h5>Type - User</h5>
+                {{end}}
+                <h5>Email - {{.CurrentUser.Email}}</h5>
+
+                {{if .CurrentUser.Phone}}
+                <h5>Phone - {{.CurrentUser.Phone}}</h5>
+                {{else}}
+                <h5> Phone - Unknown </h5>
+                {{end}}
+
+                {{if .CurrentUser.Date_Of_Birth}}
+                <h5>Date of Birth - {{.CurrentUser.Date_Of_Birth.Format
+                    "2006-01-02"}}</h5>
+                {{else}}
+                <h5>Date Of Birth - Unknown</h5>
+                {{end}}
+                {{ if .CurrentUser.Address}}
+                <h5>Address - {{.CurrentUser.Address}}</h5>
+                {{else}}
+                <h5>Aress - Unknown
+                    Add
+                </h5>
+                {{end}}
+                <a href="/users/update/{{.CurrentUser.Id}}"
+                    class="btn btn-primary w-25 text-center ms-4 mt-4">Edit
+                    Profile</a>
+            </div>
+        </div>
+        {{ template "footer.html" }}
+
+    </body>
+</html>
+{{ end }}
