@@ -36,7 +36,8 @@
       <button type="submit" class="btn btn-primary mt-5">Download</button>
     </form>
     <div class="search-container">
-      <input type="text" id="searchInput" class="form-control" placeholder="Search by Title or Description">
+      <input type="text" id="searchInput" class="form-control"
+        placeholder="Search by Title or Description">
     </div>
 
     {{end}}
@@ -125,6 +126,7 @@
         </tbody>
       </table>
     </div>
+    <div id="noPostMsg" class="noUser">No post found.</div>
     {{ template "footer.html" }}
 
     <script>

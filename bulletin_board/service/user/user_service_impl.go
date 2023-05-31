@@ -5,6 +5,7 @@ import (
 	"gin_test/bulletin_board/data/request"
 	"gin_test/bulletin_board/data/response"
 	"gin_test/bulletin_board/helper"
+	"gin_test/bulletin_board/utils"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -129,6 +130,8 @@ func (u *UserServiceImpl) FindById(userId int) response.UserResponse {
 // Update implements UserService
 func (u *UserServiceImpl) Update(users request.UpdateUserRequest) error {
 	userData, err := u.UsersInterface.FindById(users.Id)
+
+	helper.ErrorPanic(err)
 	helper.ErrorPanic(err)
 	userData.Username = users.Username
 	userData.Email = users.Email
@@ -144,4 +147,26 @@ func (u *UserServiceImpl) Update(users request.UpdateUserRequest) error {
 	}
 	return nil
 
+}
+
+// UpdatePassword implements UserService
+func (u *UserServiceImpl) UpdatePassword(users request.UpdateUserRequest) error {
+	userData, err := u.UsersInterface.FindById(users.Id)
+	helper.ErrorPanic(err)
+	hashedPassword, err := utils.HashPassword(users.Password)
+	helper.ErrorPanic(err)
+	userData.Username = users.Username
+	userData.Email = users.Email
+	userData.Password = hashedPassword
+	userData.Type = users.Type
+	userData.Phone = users.Phone
+	userData.Address = users.Address
+	userData.Date_Of_Birth = users.Date_Of_Birth
+	userData.UpdateUserId = users.UpdateUserId
+	userData.Profile_Photo = users.Profile_Photo
+	uerr := u.UsersInterface.UpdatePassword(userData)
+	if uerr != nil {
+		helper.ErrorPanic(err)
+	}
+	return nil
 }

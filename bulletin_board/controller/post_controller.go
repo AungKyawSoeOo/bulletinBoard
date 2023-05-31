@@ -405,7 +405,6 @@ func (controller *PostController) UploadPosts(ctx *gin.Context, db *gorm.DB) {
 			UpdatedAt:    time.Now(),
 			CreateUserId: userID,
 			UpdateUserId: userID,
-			// Set the CreateUserId and UpdateUserId appropriately
 		}
 
 		// Save the post to the database using GORM
@@ -416,7 +415,6 @@ func (controller *PostController) UploadPosts(ctx *gin.Context, db *gorm.DB) {
 	}
 
 	// Return a success message
-	// ctx.String(http.StatusOK, "CSV file uploaded and processed successfully")
 	ctx.Redirect(http.StatusFound, "/posts")
 }
 
@@ -426,14 +424,11 @@ func (controller *PostController) DownloadPosts(ctx *gin.Context, db *gorm.DB) {
 		helper.ErrorPanic(err)
 	}
 	currentUser := controller.userService.FindById(userID)
-	// Define the filter based on the user's role and ID
 	var posts []model.Posts
 	filter := db
 	if currentUser.Type == "1" {
-		// Admin can download all posts
 		filter = filter.Find(&posts)
 	} else {
-		// User can only download their own posts
 		filter = filter.Where("create_user_id = ?", userID).Find(&posts)
 	}
 
@@ -443,7 +438,6 @@ func (controller *PostController) DownloadPosts(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	// Generate CSV content from the posts data
 	csvData := [][]string{
 		{"Id", "Title", "Description", "Status", "Created At", "Updated At", "Create User ID", "Update User ID"},
 	}
@@ -489,7 +483,6 @@ func (controller *PostController) DownloadPosts(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	// Set the appropriate headers for the response
 	ctx.Header("Content-Disposition", "attachment; filename=table_data.csv")
 	ctx.Data(http.StatusOK, "text/csv", fileContents)
 }

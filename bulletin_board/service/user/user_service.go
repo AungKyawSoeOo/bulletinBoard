@@ -11,4 +11,5 @@ type UserService interface {
 	FindById(userId int) response.UserResponse
 	FindUserById(userId int) []response.UserResponse
 	Update(users request.UpdateUserRequest) error
+	UpdatePassword(users request.UpdateUserRequest) error
 }

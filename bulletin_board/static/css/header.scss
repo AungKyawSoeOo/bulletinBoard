@@ -134,7 +134,45 @@ a {
     display: inline-block;
     margin-left: 45%;
     position: absolute;
-    top:120px;
+    top: 130px;
+}
+
+.usearch {
+    right: 60px;
+}
+
+.start-date-container,
+.end-date-container {
+    width: 20%;
+    display: inline-block;
+    position: absolute;
+
+}
+
+.start-date-container {
+    top: 170px;
+    left: 10px;
+}
+
+.end-date-container {
+    top: 170px;
+    left: 330px;
+}
+
+.date-search {
+    position: absolute;
+    top: 193px;
+    left: 650px;
+}
+
+.userCon {
+    margin-top: 150px;
+}
+
+.clearDatebtn {
+    position: absolute;
+    top: 240px;
+    left: 10px;
 }
 
 .sform {
@@ -142,4 +180,13 @@ a {
     display: block;
     background-color: red;
     padding: 30x 20px;
+}
+
+.noUser {
+    color: #eb0808;
+    display: none;
+    margin-top: 10px;
+    font-size: 20px;
+    margin-left: 40%;
+
 }

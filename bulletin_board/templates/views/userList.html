@@ -1,87 +1,123 @@
 {{ define "userList.html" }}
 <html>
-    {{ template "header.html" }}
-    <body>
-        {{ template "common_header.html" .}}
-        <script
-            src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
-        <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
-        <script>
-        function sendDelete(event, href, id, title, description, status) {
-            event.preventDefault();
-            confirmDelete(id, title, description, status).then((result) => {
-                if (result.value) {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState !== 4) {
-                            return;
-                        }
-                        if (this.readyState === 4) {
-                            window.location.replace(this.responseURL);
-                        }
-                    };
-                    xhttp.open("DELETE", href, true);
-                    xhttp.send();
-                }
-            });
-        }
+  {{ template "header.html" }}
+  <body>
+    {{ template "common_header.html" .}}
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css" />
+    <script>
+      function sendDelete(event, href, id, title, description, status) {
+        event.preventDefault();
+        confirmDelete(id, title, description, status).then((result) => {
+          if (result.value) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+              if (this.readyState !== 4) {
+                return;
+              }
+              if (this.readyState === 4) {
+                window.location.replace(this.responseURL);
+              }
+            };
+            xhttp.open("DELETE", href, true);
+            xhttp.send();
+          }
+        });
+      }
 
-        function confirmDelete(id, username, type, phone,dob,address) {
-            var confirmMessage = "Are you sure you want to delete the following post? <br>";
-            confirmMessage += "ID: " + id + "<br>";
-            confirmMessage += "UserName: " + username + "<br>";
-            confirmMessage += "Phone: " + phone + "<br>";
-            confirmMessage += "Type: " + (type == 1 ? "Admin" : "User") + "<br>";
+      function confirmDelete(id, username, type, phone, dob, address) {
+        var confirmMessage =
+          "Are you sure you want to delete the following post? <br>";
+        confirmMessage += "ID: " + id + "<br>";
+        confirmMessage += "UserName: " + username + "<br>";
+        confirmMessage += "Phone: " + phone + "<br>";
+        confirmMessage += "Type: " + (type == 1 ? "Admin" : "User") + "<br>";
 
-
-            return Swal.fire({
-                title: 'Confirmation',
-                html: confirmMessage,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Delete'
-            });
-        }
+        return Swal.fire({
+          title: "Confirmation",
+          html: confirmMessage,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Delete",
+        });
+      }
     </script>
 
-        <a href="/users/create" class="btn btn-primary mt-5 ms-3">Create User</a>
+    <a href="/users/create" class="btn btn-primary mt-5 ms-3">Create User</a>
+    <div class="search-container usearch">
+      <input
+        type="text"
+        id="searchInputUser"
+        class="form-control"
+        placeholder="Search by Name or Address" />
+    </div>
+    <div class="start-date-container">
+      From
+      <input
+        class="form-control fcon"
+        name="start-date"
+        id="start-date"
+        type="date" />
+    </div>
+    <div class="end-date-container">
+      To
+      <input
+        class="form-control fcon"
+        name="end date"
+        id="end-date"
+        type="date" />
+    </div>
+    <button
+      class="date-search btn btn-primary"
+      name="date-search"
+      id="date-search">
+      Search
+    </button>
 
-        <div class="container-fluid mt-5">
-            <table class="table  .table-responsive bs-table">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Created User</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Date of Birth</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Created_date</th>
-                        <th scope="col">Updated_date</th>
-                        <th scope="col">Operation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <script>var rowIndex = 1;</script>
-                    {{range $index, $user := .users}}
-                    <tr class="user-row"
-                        data-user-id="{{.Id}}"
-                        data-username="{{.Username}}"
-                        data-type="{{.Type}}"
-                        data-phone="{{.Phone}}"
-                        data-dob="{{.Date_Of_Birth}}"
-                        data-address="{{.Address}}"
-                        data-email="{{.Email}}"
-                        data-created-date="{{.CreatedAt}}"
-                        data-user-created-by="{{.Creator}}"
-                        data-updated-date="{{.UpdatedAt}}"
-                        data-user-updated-by="{{.Updator}}"
-                        onmouseover="highlightRow(this)"
-                        onmouseout="unhighlightRow(this)"
-                        onclick="showUserDetail(
+    <button class="btn btn-secondary text-white clearDatebtn"
+      onclick="clearDate()" style="display: none;" id="clear-date-btn">Clear
+      Date</button>
+    <div class="container-fluid userCon">
+      <table id="userTable" class="table .table-responsive bs-table">
+        <thead>
+          <tr class="user-tr">
+            <th scope="col">No</th>
+            <th scope="col">Created User</th>
+            <th scope="col">Type</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Address</th>
+            <th scope="col">Created_date</th>
+            <th scope="col">Updated_date</th>
+            <th scope="col">Operation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <script>
+            var rowIndex = 1;
+          </script>
+          {{range $index, $user := .users}}
+          <tr
+            class="user-row"
+            data-user-id="{{.Id}}"
+            data-username="{{.Username}}"
+            data-type="{{.Type}}"
+            data-phone="{{.Phone}}"
+            data-dob="{{.Date_Of_Birth}}"
+            data-address="{{.Address}}"
+            data-email="{{.Email}}"
+            data-created-date="{{.CreatedAt}}"
+            data-user-created-by="{{.Creator}}"
+            data-updated-date="{{.UpdatedAt}}"
+            data-user-updated-by="{{.Updator}}"
+            onmouseover="highlightRow(this)"
+            onmouseout="unhighlightRow(this)"
+            onclick="showUserDetail(
                         this.getAttribute('data-user-id'),
                         this.getAttribute('data-username'),
                         this.getAttribute('data-type'),
@@ -93,38 +129,51 @@
                         this.getAttribute('data-updated-date'),
                         this.getAttribute('data-user-updated-by')
                     )">
-                        <script>document.write('<th scope="row">' + rowIndex + '</th>');
-                        </script>
-                        <td>{{.Username}}</td>
-                        <td>{{if eq .Type "0"}}User{{else}}Admin{{end}}</td>
+            <script>
+              document.write('<th scope="row">' + rowIndex + "</th>");
+            </script>
+            <td>{{.Username}}</td>
+            <td>{{if eq .Type "0"}}User{{else}}Admin{{end}}</td>
 
-                        <td>{{.Phone}}</td>
-                        {{if .Date_Of_Birth}}
-                        <td>{{.Date_Of_Birth.Format "2006-01-02"}}</td>
-                        {{else}}
-                        <td></td>
-                        {{end}}
-                        <td>{{.Address}}</td>
-                        <td>{{.CreatedAt.Format "2006-01-02"}}</td>
-                        <td>{{ .UpdatedAt.Format "2006-01-02"}}</td>
-                        <td>
+            <td>{{.Phone}}</td>
+            {{if .Date_Of_Birth}}
+            <td>{{.Date_Of_Birth.Format "2006-01-02"}}</td>
+            {{else}}
+            <td></td>
+            {{end}}
+            <td>{{.Address}}</td>
+            <td>{{.CreatedAt.Format "2006-01-02"}}</td>
+            <td>{{ .UpdatedAt.Format "2006-01-02"}}</td>
+            <td>
+              <a
+                class="btn btn-outline-primary"
+                onclick="event.stopPropagation();"
+                href="/users/update/{{.Id}}">Edit</a>
+              <a
+                class="btn btn-outline-danger"
+                href="/users/{{.Id}}"
+                onclick="event.stopPropagation(); sendDelete(event, this.href, '{{.Id}}', '{{.Username}}', '{{.Type}}', '{{.Phone}}', '{{.Date_Of_Birth}}' , '{{.Address}}')">Delete</a>
+            </td>
+          </tr>
+          <script>
+            rowIndex++;
+          </script>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    <div id="noUserMsg" class="noUser">No user found.</div>
+    {{ template "footer.html" }}
 
-                            <a class="btn btn-outline-primary"
-                                onclick="event.stopPropagation();"
-                                href="/users/update/{{.Id}}">Edit</a>
-                            <a class="btn btn-outline-danger"
-                                href="/users/{{.Id}}"
-                                onclick="event.stopPropagation(); sendDelete(event, this.href, '{{.Id}}', '{{.Username}}', '{{.Type}}', '{{.Phone}}', '{{.Date_Of_Birth}}' , '{{.Address}}')">Delete</a>
+    <script>
+      document
+        .getElementById("searchInputUser")
+        .addEventListener("input", searchUser);
+      var date =document
+        .getElementById("date-search")
 
-                        </td>
-                    </tr>
-                    <script>rowIndex++;</script>
-                    {{end}}
-                </tbody>
-            </table>
-        </div>
-        {{ template "footer.html" }}
-
-    </body>
+        date.addEventListener("click", searchByDate);
+    </script>
+  </body>
 </html>
 {{ end }}

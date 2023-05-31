@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthServiceImpl struct {
@@ -68,13 +69,17 @@ func (auth *AuthServiceImpl) Register(users request.CreateUserRequest) error {
 		return err
 	}
 
-	hashedPassword, err := utils.HashPassword(users.Password)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(users.Password), bcrypt.DefaultCost)
+	if err != nil {
+		// Handle the error
+	}
 	helper.ErrorPanic(err)
+	hashedPasswordStr := string(hashedPassword)
 
 	newUser := model.User{
 		Username:      users.Username,
 		Email:         users.Email,
-		Password:      hashedPassword,
+		Password:      hashedPasswordStr,
 		Phone:         users.Phone,
 		Address:       users.Address,
 		Date_Of_Birth: users.Date_Of_Birth,

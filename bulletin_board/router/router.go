@@ -54,6 +54,8 @@ func UsersRouter(router *gin.RouterGroup, usersInterface interfaces.UsersInterfa
 			usersController.GetUsers(ctx, userRole)
 		})
 		userRouter.GET("/profile", middlewares.IsAuth(usersInterface), usersController.ProfileForm)
+		userRouter.GET("/changepassword", middlewares.IsAuth(usersInterface), usersController.ChangePasswordForm)
+		router.POST("/users/changepasswords", middlewares.IsAuth(usersInterface), usersController.UpdatePassword)
 		userRouter.GET("/create", middlewares.IsAuth(usersInterface), usersController.CreateUser)
 		userRouter.GET("/update/:userId", middlewares.IsAuth(usersInterface), usersController.UpdateForm)
 		userRouter.DELETE("/:userId", middlewares.IsAuth(usersInterface), usersController.Delete)

@@ -15,6 +15,8 @@ type UsersInterfaceImpl struct {
 	Db *gorm.DB
 }
 
+// UpdatePassword implements UsersInterface
+
 func NewUsersInterfaceImpl(Db *gorm.DB) UsersInterface {
 	return &UsersInterfaceImpl{Db: Db}
 }
@@ -124,5 +126,27 @@ func (user *UsersInterfaceImpl) Update(users model.User) error {
 	if result.Error != nil {
 		return errors.New("something wrong")
 	}
+	return nil
+}
+func (user *UsersInterfaceImpl) UpdatePassword(users model.User) error {
+	var updateUsers = request.UpdateUserRequest{
+		Id:            users.Id,
+		Username:      users.Username,
+		Email:         users.Email,
+		Password:      users.Password,
+		Type:          users.Type,
+		Phone:         users.Phone,
+		Address:       users.Address,
+		Date_Of_Birth: users.Date_Of_Birth,
+		UpdateUserId:  users.UpdateUserId,
+		Profile_Photo: users.Profile_Photo,
+		UpdatedAt:     users.UpdatedAt,
+	}
+
+	result := user.Db.Model(&users).Updates(updateUsers)
+	if result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }

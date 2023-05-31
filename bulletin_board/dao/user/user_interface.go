@@ -11,4 +11,5 @@ type UsersInterface interface {
 	FindByEmail(email string) (model.User, error)
 	FindByUsername(username string) (model.User, error)
 	FindUserById(userId int) (users []model.User, err error)
+	UpdatePassword(users model.User) error
 }
