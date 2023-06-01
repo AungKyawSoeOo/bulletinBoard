@@ -20,8 +20,9 @@
                 {{ template "userformcommon.html" . }}
 
                 <!-- <img src="/static/images/1685025554_a2.png" alt="Profile Photo"> -->
-                <img src="/{{ .User.Profile_Photo }}" class="pphoto"
-                    alt="Profile Photo">
+                <!-- <label for="ophoto" class="mt-3">Current Photo</label> -->
+                <!-- <img src="/{{ .User.Profile_Photo }}" class="pphoto"
+                    alt="Profile Photo" name="ophoto" id="currentPhoto"> -->
 
                 <button onclick="showUserConfirmation()" type="button"
                     class="btn btn-primary mt-2 w-25">Edit</button>

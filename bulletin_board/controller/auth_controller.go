@@ -6,11 +6,14 @@ import (
 	"gin_test/bulletin_board/data/request"
 	"gin_test/bulletin_board/helper"
 	service "gin_test/bulletin_board/service/auth"
+	uservice "gin_test/bulletin_board/service/user"
+	"gin_test/bulletin_board/utils"
 	"os"
 
 	"path/filepath"
 
 	"net/http"
+	"net/smtp"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,11 +23,13 @@ import (
 
 type AuthController struct {
 	AuthService service.Authservice
+	UserService uservice.UserService
 }
 
-func NewAuthController(service service.Authservice) *AuthController {
+func NewAuthController(service service.Authservice, uservice uservice.UserService) *AuthController {
 	return &AuthController{
 		AuthService: service,
+		UserService: uservice,
 	}
 }
 
@@ -128,9 +133,20 @@ func (controller *AuthController) Register(ctx *gin.Context) {
 			})
 			return
 		} else if source == "usercreateform" {
+			userID, err := getCurrentUserID(ctx)
+			if err != nil {
+				ctx.Redirect(http.StatusFound, "/users")
+				return
+			}
+			fmt.Print(userID)
+			currentUser := controller.UserService.FindById(userID)
+			// fmt.Print(currentUser)
+			isLoggedIn := getIsLoggedIn(ctx)
 			// Redirect to the user create form with the error
 			ctx.Set("EmailExistsError", "Email already exists.")
 			ctx.HTML(http.StatusBadRequest, "usercreateform.html", gin.H{
+				"IsLoggedIn":  isLoggedIn,
+				"CurrentUser": currentUser,
 				"Errors": map[string]string{
 					"EmailExists": "Email already exists.",
 				},
@@ -270,4 +286,92 @@ func (controller *AuthController) LoginForm(ctx *gin.Context) {
 func (controller *AuthController) Logout(ctx *gin.Context) {
 	ctx.SetCookie("token", "", -1, "/", "", false, true)
 	ctx.Redirect(http.StatusFound, "/")
+}
+
+// Forget Password form
+func (controller *AuthController) ForgetPasswordForm(ctx *gin.Context) {
+	ctx.HTML(http.StatusOK, "forgetpassword.html", gin.H{})
+}
+
+// Forget Password
+func (controller *AuthController) ForgetPassword(ctx *gin.Context) {
+	tokenExpireInStr := os.Getenv("TOKEN_EXPIRED_IN")
+	tokenSecret := os.Getenv("TOKEN_SECRET")
+
+	tokenDuration, err := time.ParseDuration(tokenExpireInStr)
+	if err != nil {
+		helper.ErrorPanic(err)
+	}
+	email := ctx.PostForm("email")
+	existingUser := controller.AuthService.FindByEmail(email)
+	if existingUser.Id == 0 {
+		ctx.HTML(http.StatusOK, "forgetpassword.html", gin.H{
+			"Errors": map[string]string{
+				"NoEmail": "Email not exist.",
+			},
+		})
+		return
+	}
+	// Generate a password reset token
+	resetToken, err := utils.GenerateToken(tokenDuration, existingUser.Id, tokenSecret)
+	if err != nil {
+		// Handle the error appropriately
+		fmt.Println("Failed to generate password reset token:", err)
+		// Render an error message to the user
+		ctx.HTML(http.StatusInternalServerError, "error.html", gin.H{
+			"ErrorMessage": "Failed to generate password reset token.",
+		})
+		return
+	}
+
+	// Build the password reset URL
+	resetURL := "http://localhost:8080/password_reset/" + resetToken + "/edit"
+
+	// Compose the email
+	subject := "Password Reset"
+	body := "Hello,\n\nYou have requested to reset your password. Please click the link below to proceed:\n\n" + resetURL
+
+	smtpServer := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	smtpUsername := os.Getenv("SMTP_USERNAME")
+	smtpPassword := os.Getenv("SMTP_PASSWORD")
+	// Format the email
+	message := "From: " + smtpUsername + "\n" +
+		"To: " + email + "\n" +
+		"Subject: " + subject + "\n\n" +
+		body
+
+	// Send the email
+	merr := smtp.SendMail(smtpServer+":"+smtpPort, smtp.PlainAuth("", smtpUsername, smtpPassword, smtpServer), smtpUsername, []string{email}, []byte(message))
+	if merr != nil {
+		// Handle the error appropriately
+		fmt.Println("Failed to send email:", err)
+		// Render an error message to the user
+		ctx.HTML(http.StatusInternalServerError, "error.html", gin.H{
+			"ErrorMessage": "Failed to send email.",
+		})
+		return
+	}
+	ctx.Redirect(http.StatusFound, "/forgetpassword")
+}
+
+func GeneratePasswordResetToken(ttl time.Duration, userId int, secretJWTKey string) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256) // Use HMAC signing method
+
+	now := time.Now().UTC()
+	claim := token.Claims.(jwt.MapClaims)
+
+	claim["sub"] = userId
+	claim["exp"] = now.Add(ttl).Unix()
+	claim["iat"] = now.Unix()
+	claim["nbf"] = now.Unix()
+	claim["purpose"] = "password_reset" // Additional claim for password reset
+
+	tokenString, err := token.SignedString([]byte(secretJWTKey)) // Convert string key to []byte
+
+	if err != nil {
+		return "", fmt.Errorf("generating password reset token failed: %w", err)
+	}
+
+	return tokenString, nil
 }

@@ -1,12 +1,26 @@
 {{ define "footer.html" }}
-<footer>
+<!-- Remove the container if you want to extend the Footer to full width. -->
+<div id="content-container" style="padding-bottom: 70px;"></div>
+<!-- Footer -->
+<footer class="text-center"
+  style="background-color: #ffffff;position:fixed;bottom: 0;width: 100%;">
+  <!-- Grid container -->
+
   <!-- Copyright -->
-  <div class="text-center p-3">
-    © 2023 Copyright:
-    <a class="text-dark" href="https://nothing.com/">Meta Team Myanmar</a>
+  <div
+    class="text-center p-3"
+    style=" background-color: transparent;
+    font-size: 18px;
+ box-shadow: 0px -14px 11px -8px rgba(0,0,0,0.1);
+    border-radius: 5px;">
+    Meta Team Myanmar © 2023 Copyright
+    <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
   </div>
   <!-- Copyright -->
 </footer>
+</div>
+<!-- Footer -->
+
 <script
   src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
   integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"

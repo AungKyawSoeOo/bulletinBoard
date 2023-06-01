@@ -6,7 +6,9 @@ import (
 	"gin_test/bulletin_board/data/response"
 	"gin_test/bulletin_board/helper"
 	service "gin_test/bulletin_board/service/user"
+	"gin_test/bulletin_board/utils"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -204,6 +206,7 @@ func (controller *UsersController) ProfileForm(ctx *gin.Context) {
 		"IsLoggedIn":  isLoggedIn,
 	})
 }
+
 func checkPassword(currentPassword, hashedPassword string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(currentPassword))
 	return err == nil
@@ -227,26 +230,6 @@ func (controller *UsersController) ChangePasswordForm(ctx *gin.Context) {
 
 }
 
-// // Validate new password and confirm password
-// if newPassword != confirmPassword {
-// 	// New password and confirm password do not match, display an error message
-// 	hasErrors = true
-// 	ctx.HTML(http.StatusBadRequest, "changepasswordform.html", gin.H{
-// 		"Errors": map[string]string{
-// 			"ConfirmPassword": "Passwords do not match.",
-// 		},
-// 	})
-// 	return
-// }
-
-// if hasErrors {
-// 	ctx.HTML(http.StatusOK, "changepasswordform.html", gin.H{
-// 		"CurrentUser": currentUser,
-// 		"IsLoggedIn":  isLoggedIn,
-// 	})
-// 	return
-// }
-
 func (controller *UsersController) UpdatePassword(ctx *gin.Context) {
 	isLoggedIn := getIsLoggedIn(ctx)
 	userID, err := getCurrentUserID(ctx)
@@ -266,10 +249,40 @@ func (controller *UsersController) UpdatePassword(ctx *gin.Context) {
 	dob := ctx.PostForm("dob")
 	address := ctx.PostForm("address")
 
+	if currentpassword == "" {
+		ctx.HTML(http.StatusOK, "changepasswordform.html", gin.H{
+			"CurrentUser": currentUser,
+			"IsLoggedIn":  isLoggedIn,
+			"Errors": map[string]string{
+				"CurrentPasswordEmpty": "Current password can't be blank.",
+			},
+		})
+		return
+	}
+
+	if password == "" {
+		ctx.HTML(http.StatusOK, "changepasswordform.html", gin.H{
+			"CurrentUser": currentUser,
+			"IsLoggedIn":  isLoggedIn,
+			"Errors": map[string]string{
+				"PasswordEmpty": "New password can't be blank.",
+			},
+		})
+		return
+	}
+
+	if newcofirmpassword == "" {
+		ctx.HTML(http.StatusOK, "changepasswordform.html", gin.H{
+			"CurrentUser": currentUser,
+			"IsLoggedIn":  isLoggedIn,
+			"Errors": map[string]string{
+				"ConfirmPasswordEmpty": "Confirm password can't be blank.",
+			},
+		})
+		return
+	}
+
 	// Validate current password
-	fmt.Print(currentUser, "full")
-	fmt.Print(currentpassword, "cuu")
-	fmt.Print(currentUser.Password, "duu")
 	if !checkPassword(currentpassword, currentUser.Password) {
 
 		// Current password does not match, display an error message
@@ -321,7 +334,6 @@ func (controller *UsersController) UpdatePassword(ctx *gin.Context) {
 		photoFileName := fmt.Sprintf("%d_%s", time.Now().Unix(), photoFile.Filename)
 		photoPath = filepath.Join("static", "images", photoFileName)
 
-		// Save the uploaded file to the desired location
 		err := ctx.SaveUploadedFile(photoFile, photoPath)
 		if err != nil {
 			helper.ErrorPanic(err)
@@ -343,14 +355,118 @@ func (controller *UsersController) UpdatePassword(ctx *gin.Context) {
 		Date_Of_Birth: dobTime,
 		Profile_Photo: photoPath,
 	}
-	controller.userService.Update(updateUserRequest)
-	ctx.Redirect(http.StatusFound, "/users")
+	// controller.userService.Update(updateUserRequest)
+	// ctx.Redirect(http.StatusFound, "/users")
 
 	err = controller.userService.UpdatePassword(updateUserRequest)
 	if err != nil {
-		// Handle error and display an error message
+		return
+	}
+	ctx.Redirect(http.StatusFound, "/users")
+
+}
+
+// Reset Password form
+func (controller *UsersController) ResetPasswordForm(ctx *gin.Context) {
+	token := ctx.Param("token")
+	ctx.HTML(http.StatusOK, "resetpassword.html", gin.H{
+		"Token": token,
+	})
+}
+
+// Reset Password
+func (controller *UsersController) ResetPassword(ctx *gin.Context) {
+	tokenSecret := os.Getenv("TOKEN_SECRET")
+	password := ctx.PostForm("password")
+	confirmPassword := ctx.PostForm("cpassword")
+	username := ctx.PostForm("username")
+	email := ctx.PostForm("email")
+	utype := ctx.PostForm("type")
+	phone := ctx.PostForm("phone")
+	dob := ctx.PostForm("dob")
+	address := ctx.PostForm("address")
+	token := ctx.Param("token")
+	// Validate the token
+	userId, err := utils.ValidateToken(token, tokenSecret) // Replace tokenSecret with your actual token secret
+	// Check if token validation failed
+	if err != nil {
+		// ctx.Redirect(http.StatusOK, "resetpassword.html", gin.H{
+		// 	"Errors": map[string]string{
+		// 		"InvalidToken": "Invalid token.",
+		// 	},
+		// })
+		ctx.Redirect(http.StatusFound, "/password_reset/"+token+"/edit?error=InvalidToken")
 		return
 	}
 
-	// Password updated successfully, redirect or display a success message
+	if password == "" {
+		ctx.Redirect(http.StatusFound, "/password_reset/"+token+"/edit?error=Password can't be empty")
+		return
+	}
+
+	if confirmPassword == "" {
+		ctx.Redirect(http.StatusFound, "/password_reset/"+token+"/edit?error=Confirm password can't be empty")
+		return
+	}
+
+	if password != confirmPassword {
+		ctx.Redirect(http.StatusFound, "/password_reset/"+token+"/edit?error=Password and confirm password not match")
+		return
+	}
+
+	userID, ok := userId.(float64)
+	if !ok {
+		fmt.Print("not ok")
+	}
+
+	var dobTime *time.Time
+	if dob != "" {
+		parsedDOB, err := time.Parse("2006-01-02", dob)
+		if err != nil {
+			fmt.Print("Invalid date of birth")
+		}
+		dobTime = &parsedDOB
+	}
+	// id, err := strconv.Atoi(userId
+	helper.ErrorPanic(err)
+	if method := ctx.Request.Header.Get("X-HTTP-Method-Override"); method == "PUT" {
+		ctx.Request.Method = "PUT"
+	}
+
+	photoFile, err := ctx.FormFile("photo")
+	if err != nil && err != http.ErrMissingFile {
+		helper.ErrorPanic(err)
+	}
+
+	var photoPath string
+	if photoFile != nil {
+		// Generate a unique file name for the photo
+		photoFileName := fmt.Sprintf("%d_%s", time.Now().Unix(), photoFile.Filename)
+		photoPath = filepath.Join("static", "images", photoFileName)
+
+		err := ctx.SaveUploadedFile(photoFile, photoPath)
+		if err != nil {
+			helper.ErrorPanic(err)
+		}
+
+		// Convert backslashes to forward slashes
+		photoPath = filepath.ToSlash(photoPath)
+	}
+
+	updateUserRequest := request.UpdateUserRequest{
+		Id:            int(userID),
+		Username:      username,
+		Email:         email,
+		Password:      password,
+		Type:          utype,
+		Phone:         phone,
+		Address:       address,
+		UpdateUserId:  int(userID),
+		Date_Of_Birth: dobTime,
+		Profile_Photo: photoPath,
+	}
+	controller.userService.UpdatePassword(updateUserRequest)
+	fmt.Print(updateUserRequest)
+	ctx.Redirect(http.StatusFound, "/login")
+
 }

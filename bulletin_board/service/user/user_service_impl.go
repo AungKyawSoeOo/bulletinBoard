@@ -114,6 +114,7 @@ func (u *UserServiceImpl) FindById(userId int) response.UserResponse {
 		Id:              userData.Id,
 		Username:        userData.Username,
 		Email:           userData.Email,
+		Password:        userData.Password,
 		Type:            userData.Type,
 		Phone:           userData.Phone,
 		Address:         userData.Address,

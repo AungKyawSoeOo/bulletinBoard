@@ -30,14 +30,13 @@ func main() {
 
 	// User interface
 	userInterface := interfaces.NewUsersInterfaceImpl(config.DB)
-
-	//auth
-	authService := authService.NewAuthServiceImpl(userInterface, validate)
-	authController := controller.NewAuthController(authService)
-
 	//User
 	userService := userService.NewUserServiceImpl(userInterface, validate)
 	userController := controller.NewUsercontroller(userService)
+
+	//auth
+	authService := authService.NewAuthServiceImpl(userInterface, validate)
+	authController := controller.NewAuthController(authService, userService)
 
 	// Posts
 	postsInterface := postinterfaces.NewPostsRepositoryImpl(config.DB)

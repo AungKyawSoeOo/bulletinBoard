@@ -23,6 +23,13 @@ body {
     border-radius: 5px;
 }
 
+.nav-users.activeHead,
+.nav-posts.activeHead {
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    border-radius: 5px;
+}
+
 .errorM {
     color: #eb0808 !important;
 }
@@ -132,9 +139,10 @@ a {
 .search-container {
     width: 30%;
     display: inline-block;
-    margin-left: 45%;
+    margin-left: 40%;
     position: absolute;
     top: 130px;
+    z-index: 100;
 }
 
 .usearch {
@@ -190,3 +198,12 @@ a {
     margin-left: 40%;
 
 }
+
+#content-container {
+    margin-top: 80px !important; /* Adjust the value to match the height of your fixed header */
+  }
+
+  #selectedPhoto {
+    display: none;
+  }
+  

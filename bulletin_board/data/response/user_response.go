@@ -18,7 +18,6 @@ type UserResponse struct {
 	Updated_User_ID int        `json:"updated_user_id"`
 	Creator         string     `json:"created_user_name"`
 	Updator         string     `json:"updated_user_name"`
-	// Posts    []PostResponse `json:"posts"`
 }
 
 type LoginResponse struct {

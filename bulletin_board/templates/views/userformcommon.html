@@ -63,3 +63,41 @@
 </textarea>
 <label for="profile" class="form-label mt-3  mb-2 grey">Profile</label>
 <input class="form-control fcon" type="file" id="photo" name="photo">
+{{ if .User.Profile_Photo }}
+    <img id="currentPhoto" src="/{{ .User.Profile_Photo }}" class="pphoto" alt="Profile Photo" name="ophoto">
+{{ else }}
+    <img id="currentPhoto" src="" alt="No Profile Photo" class="pphoto" style="display: none;">
+{{ end }}
+
+<img id="selectedPhoto" src="" alt="Selected Photo" class="pphoto" style="display: none;">
+
+<script>
+ var photoInput = document.getElementById("photo");
+var selectedPhoto = document.getElementById("selectedPhoto");
+var currentPhoto = document.getElementById("currentPhoto");
+
+// Check if the user has a profile photo
+var hasProfilePhoto = currentPhoto.getAttribute("src") !== "" && currentPhoto.getAttribute("src") !== null;
+
+// Display the appropriate photo
+if (hasProfilePhoto) {
+  currentPhoto.style.display = "block";
+} else {
+  currentPhoto.style.display = "none";
+}
+
+photoInput.addEventListener("change", function(event) {
+  if (event.target.files.length > 0) {
+    selectedPhoto.src = URL.createObjectURL(event.target.files[0]);
+    selectedPhoto.style.display = "block";
+    currentPhoto.style.display = "none";
+  } else {
+    selectedPhoto.src = "";
+    selectedPhoto.style.display = "none";
+    currentPhoto.style.display = "block";
+  }
+});
+
+
+
+</script>

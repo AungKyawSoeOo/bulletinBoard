@@ -1,6 +1,8 @@
 {{define "common_header.html"}}
-
-<nav class="navbar navbar-expand-lg nav-bg">
+<div id="content-container"></div>
+<nav class="navbar navbar-expand-lg nav-bg" style="position: fixed;
+top: 0;
+width: 100%;">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Bulletin Board</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -13,11 +15,11 @@
         <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item  me-2">
-                    <a class="nav-link nav-posts" href="/posts">Posts</a>
+                    <a id="postsLink" class="nav-link nav-posts" href="/posts">Posts</a>
                 </li>
                 {{ if .IsLoggedIn }}
                 <li class="nav-item me-4">
-                    <a class="nav-link nav-users" href="/users">Users</a>
+                    <a id="usersLink" class="nav-link nav-users" href="/users">Users</a>
                 </li>
                 {{end}}
                 <li class="nav-item dropdown  me-5">
@@ -33,7 +35,7 @@
                     </button>
 
                     {{end}}
-                    <ul class="dropdown-menu dropdown-menu-dark">
+                    <ul class="dropdown-menu dropdown-menu-dark" style="z-index: 999;">
                         {{ if not .IsLoggedIn }}
                         <li><a class="dropdown-item" href="/register">Register</a></li>
                         <li><a class="dropdown-item" href="/login">Login</a></li>
@@ -61,4 +63,29 @@
         </div>
     </div>
 </nav>
+</div>
+<script>
+    // Get the current URL
+    var currentUrl = window.location.href;
+  
+    // Target URLs for the Posts and Users links
+    var postsUrl = "/posts";
+    var usersUrl = "/users";
+  
+    // Get the link elements
+    var postsLink = document.getElementById("postsLink");
+    console.log(postsLink)
+    var usersLink = document.getElementById("usersLink");
+    console.log(usersLink)
+
+    console.log(currentUrl)
+    // Compare the current URL with the target URLs
+    if (currentUrl.includes(postsUrl)) {
+        console.log("post route correct")
+        postsLink.classList.add("activeHead");
+    } else if (currentUrl.includes(usersUrl)) {
+      usersLink.classList.add("activeHead"); // Add the 'active' class to the Users link
+      console.log("user route correct")
+    }
+  </script>
 {{end}}

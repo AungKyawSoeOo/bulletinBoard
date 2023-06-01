@@ -35,9 +35,9 @@
     <form action="posts/download" method="post" class="mt-5 d-inline">
       <button type="submit" class="btn btn-primary mt-5">Download</button>
     </form>
-    <div class="search-container">
-      <input type="text" id="searchInput" class="form-control"
-        placeholder="Search by Title or Description">
+    <div class="search-container" style="z-index:100;margin-right: 30px;">
+      <input type="text" id="searchInput" class="form-control w-75 me-5"
+        placeholder="Search by Title or Description" style="z-index: 100;margin-right: 30px;">
     </div>
 
     {{end}}
@@ -126,6 +126,7 @@
         </tbody>
       </table>
     </div>
+
     <div id="noPostMsg" class="noUser">No post found.</div>
     {{ template "footer.html" }}
 
