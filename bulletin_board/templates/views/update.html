@@ -11,13 +11,13 @@
         <input type="hidden" class="form-control" name="_method" value="PUT">
         {{ template "postform.html" . }}
         <div class="form-check form-switch mt-3">
-          <input class="form-check-input" name="status" type="checkbox"
+          <input class="form-check-input mt-2" name="status" type="checkbox"
             role="switch"
             id="status" {{if eq .Tag.Status 1}}checked{{end}}>
         </div>
       
         <button type="button" class="btn btn-primary create-btn mt-3 w-25"
-          onclick="showConfirmation()">Update</button>
+          onclick="showConfirmation()" name="postUpdateBtn" id="postUpdateBtn">Update</button>
           <a href="/posts" class="btn btn-secondary cancel-btn mt-3 me-2 w-25">Cancel</a>
       </form>
     </div>
@@ -34,6 +34,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{ template "footer.html" }}
+    <script src="/static/js/posterror.js"></script>
   </body>
 </html>
 {{ end }}
