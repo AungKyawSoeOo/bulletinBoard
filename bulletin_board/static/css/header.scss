@@ -200,10 +200,19 @@ a {
 }
 
 #content-container {
-    margin-top: 80px !important; /* Adjust the value to match the height of your fixed header */
-  }
+    margin-top: 80px !important;
+    /* Adjust the value to match the height of your fixed header */
+}
 
-  #selectedPhoto {
+#selectedPhoto {
     display: none;
-  }
-  
+}
+
+.form-check-input.ms-1.rm-check {
+    margin-top: 21px;
+    border-color: #25bde7;
+}
+
+.mt-3.fgp {
+    margin-left: 62%;
+}

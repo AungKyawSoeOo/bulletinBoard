@@ -6,7 +6,7 @@ import (
 )
 
 type Authservice interface {
-	Login(users request.LoginRequest) (string, error)
+	Login(users request.LoginRequest, rememberMe bool) (string, error)
 	Register(users request.CreateUserRequest) error
 	FindByEmail(email string) model.User
 }

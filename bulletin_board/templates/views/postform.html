@@ -5,6 +5,7 @@
 {{ with .Errors.Title }}
 <p class="error" id="titleError">{{.}}</p>
 {{ end }}
+<p class="error" id="titleError"></p>
 
 <label for="description" class="mt-3 mb-2 grey">Description</label>
 <textarea name="description" class="form-control fcon" id="description"
@@ -13,3 +14,5 @@
 {{ with .Errors.Description }}
 <p class="error" id="descriptionError">{{ . }}</p>
 {{ end }}
+<p class="error" id="descriptionError"></p>
+

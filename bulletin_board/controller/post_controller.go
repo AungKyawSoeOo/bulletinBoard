@@ -38,6 +38,8 @@ func NewPostsController(service service.PostsService, uservice uservice.UserServ
 
 // create controller
 func (controller *PostController) Create(ctx *gin.Context, userId int) {
+	isLoggedIn := getIsLoggedIn(ctx)
+	currentUser := controller.userService.FindById(userId)
 	title := ctx.PostForm("title")
 	description := ctx.PostForm("description")
 
@@ -49,9 +51,9 @@ func (controller *PostController) Create(ctx *gin.Context, userId int) {
 	fmt.Print(userId)
 	fmt.Print(createTagsRequest)
 	// ctx.HTML(http.StatusOK, "createConfirm.html", gin.H{})
-	err := controller.tagsService.Create(createTagsRequest, userId)
-	if err != nil {
-		if validationErr, ok := err.(validator.ValidationErrors); ok {
+	terr := controller.tagsService.Create(createTagsRequest, userId)
+	if terr != nil {
+		if validationErr, ok := terr.(validator.ValidationErrors); ok {
 			errorMessages := make(map[string]string)
 			for _, fieldErr := range validationErr {
 				fieldName := fieldErr.Field()
@@ -70,7 +72,9 @@ func (controller *PostController) Create(ctx *gin.Context, userId int) {
 			}
 
 			ctx.HTML(http.StatusBadRequest, "create.html", gin.H{
-				"Errors": errorMessages,
+				"IsLoggedIn":  isLoggedIn,
+				"CurrentUser": currentUser,
+				"Errors":      errorMessages,
 			})
 			return
 		}

@@ -35,13 +35,19 @@ func (auth *AuthServiceImpl) FindByEmail(email string) model.User {
 }
 
 // Login implements Authservice
-func (auth *AuthServiceImpl) Login(users request.LoginRequest) (string, error) {
-	tokenExpireInStr := os.Getenv("TOKEN_EXPIRED_IN")
+func (auth *AuthServiceImpl) Login(users request.LoginRequest, rememberMe bool) (string, error) {
 	tokenSecret := os.Getenv("TOKEN_SECRET")
 
-	tokenDuration, err := time.ParseDuration(tokenExpireInStr)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse TOKEN_EXPIRED_IN: %w", err)
+	var tokenDuration time.Duration
+	if rememberMe {
+		tokenDuration = time.Hour * 24 * 15 // 15 days
+	} else {
+		tokenDurationStr := os.Getenv("TOKEN_EXPIRED_IN")
+		var err error
+		tokenDuration, err = time.ParseDuration(tokenDurationStr)
+		if err != nil {
+			return "", fmt.Errorf("failed to parse TOKEN_EXPIRED_IN: %w", err)
+		}
 	}
 
 	newUser, err := auth.UsersInterface.FindByEmail(users.Email)

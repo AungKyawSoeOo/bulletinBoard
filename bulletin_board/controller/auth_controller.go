@@ -198,7 +198,7 @@ func (controller *AuthController) Register(ctx *gin.Context) {
 				errorMessage := ""
 				switch fieldErr.Tag() {
 				case "required":
-					errorMessage = fieldName + " field is required"
+					errorMessage = fieldName + "  is required"
 				case "min":
 					errorMessage = fieldName + " must be at least " + fieldErr.Param() + " characters long"
 				case "max":
@@ -236,11 +236,37 @@ func (controller *AuthController) Register(ctx *gin.Context) {
 func (controller *AuthController) Login(ctx *gin.Context) {
 	email := ctx.PostForm("email")
 	password := ctx.PostForm("password")
+	remember := ctx.PostForm("remember")
+	rememberMe := remember == "on"
+	// if remember == "on" {
+	// 	rememberMe = true
+	// } else {
+	// 	rememberMe = false
+	// }
+	fmt.Println("rember me", remember)
 	loginRequest := request.LoginRequest{
 		Email:    email,
 		Password: password,
 	}
-	token, err_token := controller.AuthService.Login(loginRequest)
+	if email == "" {
+		ctx.HTML(http.StatusBadRequest, "login.html", gin.H{
+			// "Errors": map[string]string{
+			// 	"emailNeed": "Email is required",
+			// },
+		})
+		return
+	}
+
+	if password == "" {
+		ctx.HTML(http.StatusBadRequest, "login.html", gin.H{
+			"Errors": map[string]string{
+				"passwordNeed": "Password is required",
+			},
+		})
+		return
+	}
+
+	token, err_token := controller.AuthService.Login(loginRequest, rememberMe)
 	if err_token != nil {
 		ctx.Set("logFail", "Invalid email or password.")
 		ctx.HTML(http.StatusBadRequest, "login.html", gin.H{
@@ -257,11 +283,19 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 	// 	TokenType: "Bearer",
 	// 	Token:     token,
 	// }
+	cookieMaxAge := 3600 // Default expiration time of 1 hour
+
+	if remember == "on" {
+		fmt.Println("Onnnnnn")
+		cookieMaxAge = 60 * 60 * 24 * 15 // 15 days in seconds
+	}
+	fmt.Println("Max age", cookieMaxAge)
+
 	cookie := &http.Cookie{
 		Name:     "token",
 		Value:    token,
-		Expires:  time.Now().Add(time.Hour),
-		MaxAge:   3600,
+		Expires:  time.Now().Add(time.Second * time.Duration(cookieMaxAge)),
+		MaxAge:   cookieMaxAge,
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   false,

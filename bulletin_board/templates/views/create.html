@@ -1,32 +1,120 @@
 {{ define "create.html" }}
 <html>
-    {{ template "header.html" }}
-    <body>
-        {{ template "common_header.html" .}}
-        <h2 class="text-center mt-5 greyBack">Post Create</h2>
-        <div class="container w-50 form-container mt-5">
-            <form action="/posts/" method="post" class="createForm"
-                id="createForm">
-                {{ template "postform.html" . }}
-             
-                <button class="btn btn-primary mt-3 ms-2 create-btn w-25"
-                    onclick="showConfirmation()" type="button">Create</button>
-                    <a class="btn btn-secondary cancel-btn mt-3 w-25" href="/posts/">Cancel</a>
-            </form>
+  {{ template "header.html" }}
+  <body>
+    {{ template "common_header.html" .}}
+    <h2 class="text-center mt-5 greyBack">Post Create</h2>
+    <div class="container w-50 form-container mt-5">
+      <form action="/posts/" method="post" class="createForm" id="createForm">
+        {{ template "postform.html" . }}
+        <button
+          class="btn btn-primary mt-3 ms-2 create-btn w-25"
+          onclick="showConfirmation()"
+          type="button"
+          name="postCreateBtn"
+          id="postCreateBtn" disabled>
+          Create
+        </button>
+        <a class="btn btn-secondary cancel-btn mt-3 w-25" href="/posts/"
+          >Cancel</a
+        >
+      </form>
 
-            <div id="overlay" class="overlay">
-                <div class="confirmation">
-                    <h3>Confirmation</h3>
-                    <p>Title: <span id="confirmTitle"></span></p>
-                    <p>Description: <span id="confirmDescription"></span></p>
-                    <button class="btn btn-primary"
-                        onclick="confirmCreate()">Confirm</button>
-                    <button class="btn btn-secondary"
-                        onclick="cancelCreate()">Cancel</button>
-                </div>
-            </div>
+      <div id="overlay" class="overlay">
+        <div class="confirmation">
+          <h3>Confirmation</h3>
+          <p>Title: <span id="confirmTitle"></span></p>
+          <p>Description: <span id="confirmDescription"></span></p>
+          <button class="btn btn-primary" onclick="confirmCreate()">
+            Confirm
+          </button>
+          <button class="btn btn-secondary" onclick="cancelCreate()">
+            Cancel
+          </button>
         </div>
-        {{ template "footer.html" }}
-    </body>
+      </div>
+    </div>
+    {{ template "footer.html" }}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Define the validation rules
+        var constraints = {
+          title: {
+            presence: {
+              allowEmpty: false,
+              message: "^Title is required",
+            },
+            length: {
+              maximum: 50,
+              tooLong: "^Title is too long (maximum %{count} characters)",
+            },
+          },
+          description: {
+            presence: {
+              allowEmpty: false,
+              message: "^Description is required",
+            },
+            length: {
+              minimum: 6,
+              maximum: 20,
+              tooShort: "^Description is too short (minimum %{count} characters)",
+              tooLong: "^Description is too long (maximum %{count} characters)",
+            },
+          },
+        };
+    
+        // Get the input elements
+        var titleInput = document.getElementById("title");
+        console.log(titleInput)
+        var descriptionInput = document.getElementById("description");
+        var postCreateBtn = document.getElementById("postCreateBtn");
+
+        var titleError=document.getElementById("titleError")
+        var desError=document.getElementById("descriptionError")
+    
+        // Attach input event listeners to the title and description inputs
+        titleInput.addEventListener("input", validateForm);
+        descriptionInput.addEventListener("input", validateForm);
+    
+        // Function to validate the form and enable/disable the create button
+        function validateForm() {
+          // Perform validation
+          var validationResult = validate(
+            {
+              title: titleInput.value,
+              description: descriptionInput.value,
+            },
+            constraints
+          );
+    
+          // Clear previous error messages
+          if (titleError) {
+    titleError.textContent = "";
+  }
+  if (desError) {
+    desError.textContent = "";
+  }
+
+    
+          // Display validation errors, if any
+          if (validationResult) {
+            var titleErrors = validationResult.title;
+            var descriptionErrors = validationResult.description;
+    
+            if (titleErrors && titleErrors.length > 0) {
+              titleError.textContent = titleErrors[0];
+            } else {
+              if (desError) {
+        desError.textContent = descriptionErrors ? descriptionErrors[0] : "";
+      }
+            }
+          }
+    
+          postCreateBtn.disabled = !!validationResult;
+        }
+      });
+    </script>
+    
+  </body>
 </html>
 {{ end }}

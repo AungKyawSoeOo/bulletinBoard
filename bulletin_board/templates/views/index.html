@@ -35,9 +35,10 @@
     <form action="posts/download" method="post" class="mt-5 d-inline">
       <button type="submit" class="btn btn-primary mt-5">Download</button>
     </form>
-    <div class="search-container" style="z-index:100;margin-right: 30px;">
-      <input type="text" id="searchInput" class="form-control w-75 me-5"
-        placeholder="Search by Title or Description" style="z-index: 100;margin-right: 30px;">
+    <div class="search-container" style="z-index:100;">
+      <input type="text" id="searchInput" class="form-control w-75"
+        placeholder="Search by Title or Description"
+        style="z-index: 100;margin-left: 40px;">
     </div>
 
     {{end}}
@@ -86,7 +87,6 @@
             <td>{{.Description}}</td>
             <td>{{.Creator}}</td>
             <td>{{.CreatedAt.Format "2006-01-02"}}</td>
-            <!-- <td>{{.UpdatedAt.Format "2006-01-02"}}</td> -->
             <td>
               <a
                 class="btn btn-outline-primary"
@@ -100,7 +100,8 @@
           </tr>
           <script>rowIndex++;</script>
 
-          {{end}} {{else}}
+          {{end}}
+          {{else}}
           <script>var rowIndex = 1;</script>
           {{range $index, $tag := .tags}}
 
