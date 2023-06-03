@@ -45,7 +45,9 @@
               message: "^Title is required",
             },
             length: {
+              minimum: 5,
               maximum: 50,
+              tooShort:"^Title is too short (minimum %{count} characters)",
               tooLong: "^Title is too long (maximum %{count} characters)",
             },
           },
@@ -56,7 +58,7 @@
             },
             length: {
               minimum: 6,
-              maximum: 20,
+              maximum: 255,
               tooShort: "^Description is too short (minimum %{count} characters)",
               tooLong: "^Description is too long (maximum %{count} characters)",
             },

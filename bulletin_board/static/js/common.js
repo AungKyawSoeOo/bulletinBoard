@@ -6,8 +6,9 @@ function showConfirmation() {
     document.getElementById("description").value;
 
   var statusCheckbox = document.getElementById("status");
-  var statusValue = statusCheckbox.checked ? "Active" : "Inactive";
-
+  if(statusCheckbox){
+    var statusValue = statusCheckbox.checked ? "Active" : "Inactive";
+  }
   document.getElementById("confirmStatus").textContent = statusValue;
 }
 

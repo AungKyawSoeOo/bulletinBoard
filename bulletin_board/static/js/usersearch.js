@@ -45,10 +45,16 @@ function searchUser() {
 var searchButton = document.getElementById("date-search");
 var startDateInput = document.getElementById("start-date");
 var endDateInput = document.getElementById("end-date");
-if (startDateInput.value === "" && endDateInput.value === "") {
-  searchButton.disabled = true;
+if (startDateInput && endDateInput && startDateInput.value === "" && endDateInput.value === "") {
+  if(searchButton){
+    searchButton.disabled = true;
+  }
+ 
 } else {
-  searchButton.disabled = false;
+  if(searchButton){
+    searchButton.disabled = false;
+  }
+
 }
 
 function searchByDate() {
