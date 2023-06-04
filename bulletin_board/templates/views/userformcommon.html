@@ -5,6 +5,7 @@
 {{ with .Errors.Username }}
 <p class="error" id="userError">{{.}}</p>
 {{ end }}
+<p class="errorM" id="userError" style="height: 1px;"></p>
 
 <label for="email" class="mb-2 mt-3 grey">Email</label>
 <input class="form-control fcon" type="email" id="email" name="email"
@@ -12,8 +13,15 @@
 {{ with .Errors.Email }}
 <p class="error" id="emailError">{{.}}</p>
 {{ end }}
+<p class="error" id="emailError" style="height: 1px;"></p>
 {{ with .Errors.EmailExists }}
-<p class="error" id="emailExistsError">{{.}}</p>
+<script>
+  Swal.fire({
+icon: 'error',
+title: 'Error',
+text: '{{.}}'
+});
+</script>
 {{ end }}
 
 {{ if not .IsUpdate }}
@@ -23,6 +31,7 @@
 {{ with .Errors.Password }}
 <p class="error" id="passwordError">{{.}}</p>
 {{ end }}
+<p class="error" id="passwordError" style="height: 1px;"></p>
 
 <label for="password" class="mb-2 mt-3  grey">Password Confirmation</label>
 <input class="form-control fcon" type="password" id="confirmPassword"
@@ -30,6 +39,7 @@
 {{ with .Errors.ConfirmPassword }}
 <p class="error" id="confirmPasswordError">{{.}}</p>
 {{ end }}
+<p class="errorM" id="confirmPasswordError" style="height: 1px;"></p>
 
 {{ end }}
 <label for="type" class="mb-2 mt-3  grey">Type</label>
@@ -62,7 +72,7 @@
     {{ if .User.Address }}{{ .User.Address }}{{ end }}
 </textarea>
 <label for="profile" class="form-label mt-3  mb-2 grey">Profile</label>
-<input class="form-control fcon" type="file" id="photo" name="photo">
+<input class="form-control fcon" type="file" id="photo" name="photo" accept="image/*">
 {{ if .User.Profile_Photo }}
     <img id="currentPhoto" src="/{{ .User.Profile_Photo }}" class="pphoto" alt="Profile Photo" name="ophoto">
 {{ else }}
@@ -70,7 +80,7 @@
 {{ end }}
 
 <img id="selectedPhoto" src="" alt="Selected Photo" class="pphoto" style="display: none;">
-
+<p class="error" id="profileError" style="height: 1px;"></p>
 <script>
  var photoInput = document.getElementById("photo");
 var selectedPhoto = document.getElementById("selectedPhoto");
