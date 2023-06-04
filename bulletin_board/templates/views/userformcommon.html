@@ -74,21 +74,21 @@ text: '{{.}}'
 <label for="profile" class="form-label mt-3  mb-2 grey">Profile</label>
 <input class="form-control fcon" type="file" id="photo" name="photo" accept="image/*">
 {{ if .User.Profile_Photo }}
-    <img id="currentPhoto" src="/{{ .User.Profile_Photo }}" class="pphoto" alt="Profile Photo" name="ophoto">
+    <img id="currentPhoto" src="/{{ .User.Profile_Photo }}" class="pphoto" alt="Profile Photo" name="ophoto" >
 {{ else }}
     <img id="currentPhoto" src="" alt="No Profile Photo" class="pphoto" style="display: none;">
 {{ end }}
 
-<img id="selectedPhoto" src="" alt="Selected Photo" class="pphoto" style="display: none;">
-<p class="error" id="profileError" style="height: 1px;"></p>
+<img id="selectedPhoto" src="" alt="Selected Photo" class="pphoto">
+<p class="errorM" id="profileError" style="height: 1px;"></p>
 <script>
- var photoInput = document.getElementById("photo");
+var photoInput = document.getElementById("photo");
 var selectedPhoto = document.getElementById("selectedPhoto");
 var currentPhoto = document.getElementById("currentPhoto");
 
 // Check if the user has a profile photo
 var hasProfilePhoto = currentPhoto.getAttribute("src") !== "" && currentPhoto.getAttribute("src") !== null;
-
+console.log("profile",hasProfilePhoto);
 // Display the appropriate photo
 if (hasProfilePhoto) {
   currentPhoto.style.display = "block";
@@ -97,8 +97,10 @@ if (hasProfilePhoto) {
 }
 
 photoInput.addEventListener("change", function(event) {
-  if (event.target.files.length > 0) {
-    selectedPhoto.src = URL.createObjectURL(event.target.files[0]);
+  var file = event.target.files[0];
+
+  if (file && file.type.startsWith("image/")) {
+    selectedPhoto.src = URL.createObjectURL(file);
     selectedPhoto.style.display = "block";
     currentPhoto.style.display = "none";
   } else {
@@ -107,7 +109,6 @@ photoInput.addEventListener("change", function(event) {
     currentPhoto.style.display = "block";
   }
 });
-
 
 
 </script>

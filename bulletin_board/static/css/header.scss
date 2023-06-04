@@ -216,3 +216,27 @@ a {
 .mt-3.fgp {
     margin-left: 55% !important;
 }
+
+.datatable-container .dataTables_length,
+.datatable-container .dataTables_filter {
+  display: none;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: auto;
+    display: none !important;
+}
+
+// #postTable thead th.sorting:before {
+//   right: auto;
+//   left: -5px; /* Adjust the value as needed */
+// }
+#postTable thead th.sorting_asc:before,
+#postTable thead th.sorting:before
+{
+    left: 105px;
+}
+#postTable thead th.sorting_asc::after,
+#postTable thead th.sorting:after{
+    left: 109px;
+}

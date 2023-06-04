@@ -9,6 +9,14 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css" />
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap5.min.css">
+      <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.bootstrap5.min.css">
+      <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap5.min.js"></script>
+      
+
     <script>
       function sendDelete(event, href, id, title, description, status) {
         event.preventDefault();
@@ -42,17 +50,19 @@
     </div>
 
     {{end}}
-    <div class="container-fluid">
+    <div class="container-fluid datatable-container mt-5">
       <table id="postTable" class="table .table-responsive bs-table mt-5">
         <thead>
           <tr>
-            <th scope="col">No.</th>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Posted User</th>
-            <th scope="col">Posted Date</th>
+            <th scope="col" style="color:red">Number</th>
+            <th scope="col" style="color:red">Title</th>
+            <th scope="col" style="color:red">Description</th>
+            <th scope="col" style="color:red">Posted User</th>
+            <th scope="col" style="color:red">Posted Date</th>
             {{if .IsLoggedIn}}
-            <th scope="col">Operation</th>
+            <th scope="col" style="color:red"  data-orderable="false">Operation</th>
+            {{else}} 
+            <th scope="col" style="color:red" data-orderable="false" ></th>
             {{end}}
           </tr>
 
@@ -81,7 +91,7 @@
           )"
             onmouseover="highlightRow(this)"
             onmouseout="unhighlightRow(this)">
-            <script>document.write('<th scope="row">' + rowIndex + '</th>');
+            <script>document.write('<td>' + rowIndex + '</td>');
             </script>
             <td>{{.Title}}</td>
             <td>{{.Description}}</td>
@@ -97,6 +107,7 @@
                 href="/posts/{{.Id}}"
                 onclick="sendDelete(event, this.href, '{{.Id}}', '{{.Title}}', '{{.Description}}', '{{.Status}}');event.stopPropagation();">Delete</a>
             </td>
+          
           </tr>
           <script>rowIndex++;</script>
 
@@ -115,12 +126,13 @@
             data-post-updated-by="{{.Updator}}"
             onmouseover="highlightRow(this)"
             onmouseout="unhighlightRow(this)">
-            <script>document.write('<th scope="row">' + rowIndex + '</th>');
+            <script>document.write('<td>' + rowIndex + '</td>');
             </script>
             <td>{{.Title}}</td>
             <td>{{.Description}}</td>
             <td>{{.Creator}}</td>
             <td>{{.CreatedAt.Format "2006-01-02"}}</td>
+           <td data-orderable="false"></td>
           </tr>
           <script>rowIndex++;</script>
           {{end}} {{end}}
@@ -132,7 +144,38 @@
     {{ template "footer.html" }}
 
     <script>
-    document.getElementById("searchInput").addEventListener("input", search);
+
+    var searchInput=document.getElementById("searchInput")
+    if(searchInput){
+      searchInput.addEventListener("input", search);
+    }
+
+    $(document).ready(function() {
+  $('#postTable').DataTable({
+    "paging": true, // Enable pagination
+    "pageLength": 7, // Number of rows per page
+    "pagingType": "full_numbers", // Use full_numbers pagination style
+    "language": {
+      "paginate": {
+        "first": "&laquo;",
+        "previous": "&lsaquo;",
+        "next": "&rsaquo;",
+        "last": "&raquo;"
+      },
+    //  "search": "", // Remove the default search box label
+    //   "lengthMenu": "_MENU_", // Remove the "Show entries" label
+    //   "info": "_START_-_END_ of _TOTAL_", // Customize the information text
+    //   "infoEmpty": "0-0 of 0"
+    },
+    // "dom": '<"top"fl>t<"bottom"ip>', 
+    // "columnDefs": [
+    //   { "orderable": false, "targets": "_all" } // Hide sort arrows
+    // ]
+    // Additional configuration options...
+  });
+});
+
+
     </script>
   </body>
 </html>
